@@ -12,12 +12,15 @@
         android:layout_height="wrap_content">
 
     </android.support.design.widget.TabLayout>
+
     <com.warm.library.TabLayout
         android:id="@+id/tab_my"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:tabIndicatorWidth="20dp"
-        android:layout_below="@+id/tab_design">
+        android:layout_below="@+id/tab_design"
+        app:tabBackground="@color/colorPrimary"
+        app:tabIndicatorBottom="4dp"
+        app:tabIndicatorWidth="20dp">
 
     </com.warm.library.TabLayout>
 
