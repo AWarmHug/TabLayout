@@ -1,4 +1,4 @@
-package com.warm.tablayout;
+package com.warm.tablayoutdemo;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;

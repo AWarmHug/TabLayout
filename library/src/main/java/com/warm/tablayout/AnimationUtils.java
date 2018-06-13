@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.warm.library;
+package com.warm.tablayout;
 
 import android.support.v4.view.animation.FastOutLinearInInterpolator;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;

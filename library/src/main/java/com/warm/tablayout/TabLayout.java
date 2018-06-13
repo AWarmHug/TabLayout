@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.warm.library;
+package com.warm.tablayout;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -34,6 +34,7 @@ import android.support.annotation.IntDef;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.Px;
 import android.support.annotation.RestrictTo;
 import android.support.annotation.StringRes;
 import android.support.v4.util.Pools;
@@ -49,7 +50,6 @@ import android.support.v7.widget.TooltipCompat;
 import android.text.Layout;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -275,6 +275,7 @@ public class TabLayout extends HorizontalScrollView {
     int mTabTextAppearance;
     ColorStateList mTabTextColors;
     float mTabTextSize;
+    float mTabSelectedTextSize;
     float mTabTextMultiLineSize;
 
     final int mTabBackgroundResId;
@@ -378,6 +379,16 @@ public class TabLayout extends HorizontalScrollView {
             final int selected = a.getColor(R.styleable.TabLayout_tabSelectedTextColor, 0);
             mTabTextColors = createColorStateList(mTabTextColors.getDefaultColor(), selected);
         }
+        //add
+        if (a.hasValue(R.styleable.TabLayout_tabTextSize)) {
+            mTabTextSize = a.getDimensionPixelSize(
+                    R.styleable.TabLayout_tabTextSize, 0);
+        }
+        if (a.hasValue(R.styleable.TabLayout_tabSelectedTextSize)) {
+            mTabSelectedTextSize = a.getDimensionPixelSize(
+                    R.styleable.TabLayout_tabSelectedTextSize, (int) mTabTextSize);
+        }
+        //add
 
         mRequestedTabMinWidth = a.getDimensionPixelSize(R.styleable.TabLayout_tabMinWidth,
                 INVALID_WIDTH);
@@ -762,6 +773,22 @@ public class TabLayout extends HorizontalScrollView {
             updateAllTabs();
         }
     }
+
+    //add
+    public void setTabTextSize(@Px int textSize) {
+        if (mTabTextSize != textSize) {
+            mTabTextSize = textSize;
+            updateAllTabs();
+        }
+    }
+
+    public void setTabSelectedTextSize(@Px int textSize) {
+        if (mTabSelectedTextSize != textSize) {
+            mTabSelectedTextSize = textSize;
+            updateAllTabs();
+        }
+    }
+    //add
 
     /**
      * Gets the text colors for the different states (normal, selected) used for the tabs.
@@ -1596,6 +1623,9 @@ public class TabLayout extends HorizontalScrollView {
             // changed
             if (mTextView != null) {
                 mTextView.setSelected(selected);
+                // change
+                mTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, selected ? mTabSelectedTextSize : mTabTextSize);
+                // change
             }
             if (mIconView != null) {
                 mIconView.setSelected(selected);
@@ -1644,7 +1674,9 @@ public class TabLayout extends HorizontalScrollView {
             // We need to switch the text size based on whether the text is spanning 2 lines or not
             if (mTextView != null) {
                 final Resources res = getResources();
-                float textSize = mTabTextSize;
+                //change
+                float textSize = mTextView.isSelected() ? mTabSelectedTextSize : mTabTextSize;
+                //change
                 int maxLines = mDefaultMaxLines;
 
                 if (mIconView != null && mIconView.getVisibility() == VISIBLE) {
@@ -1996,7 +2028,6 @@ public class TabLayout extends HorizontalScrollView {
         }
 
         //修改
-        // TODO: 2018/6/1
         private void updateIndicatorPosition() {
             final View selectedTitle = getChildAt(mSelectedPosition);
             int left, right;
@@ -2005,7 +2036,6 @@ public class TabLayout extends HorizontalScrollView {
                 int selectedTitleD[] = getToTabStripLeftDistance(selectedTitle);
                 left = selectedTitleD[0];
                 right = selectedTitleD[1];
-                Log.d("TabLayout", "selectedTitleD: left=" + left + "right=" + right);
 
                 if (mSelectionOffset > 0f && mSelectedPosition < getChildCount() - 1) {
                     // Draw the selection partway between the tabs
@@ -2066,7 +2096,7 @@ public class TabLayout extends HorizontalScrollView {
                 TabView tabView = (TabView) view;
                 if (tabView.mCustomView != null) {
                     return tabView.mCustomView;
-                }  else {
+                } else {
                     return tabView;
                 }
             } else {
@@ -2100,8 +2130,8 @@ public class TabLayout extends HorizontalScrollView {
          * @return [left, right]
          */
         int[] getToTabStripLeftDistance(View tabView) {
-            int lineWidth=getLineWidth(tabView);
-            int left=tabView.getLeft()+(tabView.getWidth()-lineWidth)/2;
+            int lineWidth = getLineWidth(tabView);
+            int left = tabView.getLeft() + (tabView.getWidth() - lineWidth) / 2;
             int[] distances = new int[]{left, left + lineWidth};
             return distances;
         }
@@ -2115,7 +2145,6 @@ public class TabLayout extends HorizontalScrollView {
             }
         }
 
-        // TODO: 2018/6/1
         void animateIndicatorToPosition(final int position, int duration) {
             if (mIndicatorAnimator != null && mIndicatorAnimator.isRunning()) {
                 mIndicatorAnimator.cancel();

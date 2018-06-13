@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.warm.library;
+package com.warm.tablayout;
 
 import android.content.Context;
 import android.content.res.TypedArray;

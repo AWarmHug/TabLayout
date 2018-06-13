@@ -1,4 +1,4 @@
-package com.warm.tablayout;
+package com.warm.tablayoutdemo;
 
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -23,12 +23,12 @@ public class Adapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return 3;
+        return 10;
     }
 
     @Nullable
     @Override
     public CharSequence getPageTitle(int position) {
-        return "这是" + position;
+        return "Title" + position;
     }
 }

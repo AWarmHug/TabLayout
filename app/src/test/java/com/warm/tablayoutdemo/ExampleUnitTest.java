@@ -1,4 +1,4 @@
-package com.warm.tablayout;
+package com.warm.tablayoutdemo;
 
 import org.junit.Test;
 

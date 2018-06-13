@@ -1,10 +1,10 @@
-package com.warm.tablayout;
+package com.warm.tablayoutdemo;
 
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 
-import com.warm.library.TabLayout;
+import com.warm.tablayout.TabLayout;
 
 public class MainActivity extends AppCompatActivity {
     private android.support.design.widget.TabLayout tabDesign;

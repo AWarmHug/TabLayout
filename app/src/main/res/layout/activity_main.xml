@@ -9,20 +9,24 @@
     <android.support.design.widget.TabLayout
         android:id="@+id/tab_design"
         android:layout_width="match_parent"
+        app:tabMode="scrollable"
         android:layout_height="wrap_content">
 
     </android.support.design.widget.TabLayout>
 
-    <com.warm.library.TabLayout
+    <com.warm.tablayout.TabLayout
         android:id="@+id/tab_my"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tab_design"
         app:tabBackground="@color/colorPrimary"
         app:tabIndicatorBottom="4dp"
-        app:tabIndicatorWidth="20dp">
+        app:tabMode="scrollable"
+        app:tabTextSize="12sp"
+        app:tabSelectedTextSize="18sp"
+        app:tabIndicatorEqual="equalToText">
 
-    </com.warm.library.TabLayout>
+    </com.warm.tablayout.TabLayout>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/pager"
