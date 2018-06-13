@@ -22,8 +22,6 @@
         app:tabBackground="@color/colorPrimary"
         app:tabIndicatorBottom="4dp"
         app:tabMode="scrollable"
-        app:tabTextSize="12sp"
-        app:tabSelectedTextSize="18sp"
         app:tabIndicatorEqual="equalToText">
 
     </com.warm.tablayout.TabLayout>
