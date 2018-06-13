@@ -43,7 +43,7 @@ repositories {
 ```
 
 ```
-implementation('com.github.AWarmHug:TabLayout:1.0.1') {
+implementation('com.github.AWarmHug:TabLayout:1.0.2') {
     exclude group: 'com.android.support'
 }
 ```
