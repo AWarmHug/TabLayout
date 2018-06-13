@@ -1,4 +1,7 @@
+
+
 # TabLayout
+
 在原design包中的TabLayout的基础上增加了一些属性。
 
 主要是下方横线：
@@ -29,7 +32,21 @@ tabTextSize/tabSelectedTextSize和selectedTextColor用法相同，
 
 会覆盖掉tabTextAppearance已经设置好的效果，
 
-已经发布到jitpack上，
+已经发布到jitpack上：
+
+```
+repositories {
+    jcenter()
+    maven { url "https://jitpack.io" }
+    google()
+}
+```
+
+```
+implementation('com.github.AWarmHug:TabLayout:1.0.1') {
+    exclude group: 'com.android.support'
+}
+```
 
 效果如图：
 
