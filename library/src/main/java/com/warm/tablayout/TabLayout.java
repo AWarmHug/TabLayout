@@ -26,10 +26,12 @@ import android.content.res.TypedArray;
 import android.database.DataSetObserver;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.FloatRange;
 import android.support.annotation.IntDef;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
@@ -50,6 +52,7 @@ import android.support.v7.widget.TooltipCompat;
 import android.text.Layout;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -147,6 +150,9 @@ import static android.support.v4.view.ViewPager.SCROLL_STATE_SETTLING;
 @ViewPager.DecorView
 public class TabLayout extends HorizontalScrollView {
 
+    private static final String TAG = "TabLayout";
+    private static final boolean DEBUG = true;
+
     private static final int DEFAULT_HEIGHT_WITH_TEXT_ICON = 72; // dps
     static final int DEFAULT_GAP_TEXT_ICON = 8; // dps
     private static final int INVALID_WIDTH = -1;
@@ -155,7 +161,7 @@ public class TabLayout extends HorizontalScrollView {
     static final int FIXED_WRAP_GUTTER_MIN = 16; //dps
     static final int MOTION_NON_ADJACENT_OFFSET = 24;
 
-    private static final int ANIMATION_DURATION = 300;
+    private static final int ANIMATION_DURATION = DEBUG ? 5000 : 300;
 
     private static final Pools.Pool<Tab> sTabPool = new Pools.SynchronizedPool<>(16);
 
@@ -214,14 +220,14 @@ public class TabLayout extends HorizontalScrollView {
     public @interface TabGravity {
     }
 
-    //增加
-    public static final int EQUAL_TO_TAB = -1;
+    //add
+    public static final int EQUAL_TO_TAB = 0;
 
-    public static final int EQUAL_TO_TEXT = -2;
+    public static final int EQUAL_TO_TEXT = 1;
 
-    public static final int EQUAL_TO_ICON = -3;
+    public static final int EQUAL_TO_ICON = 2;
 
-    public static final int EQUAL_TO_CUSTOM = -4;
+    public static final int EQUAL_TO_CUSTOM = 3;
 
     /**
      * @hide
@@ -231,7 +237,20 @@ public class TabLayout extends HorizontalScrollView {
     @Retention(RetentionPolicy.SOURCE)
     public @interface IndicatorWidth {
     }
-    //增加end
+
+    public static final int RECT = 0;
+
+    public static final int ROUND_RECT = 1;
+
+    /**
+     * @hide
+     */
+    @RestrictTo(LIBRARY_GROUP)
+    @IntDef(flag = true, value = {RECT, ROUND_RECT})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface IndicatorShape {
+    }
+    //add
 
 
     /**
@@ -275,7 +294,9 @@ public class TabLayout extends HorizontalScrollView {
     int mTabTextAppearance;
     ColorStateList mTabTextColors;
     float mTabTextSize;
+    //add
     float mTabSelectedTextSize;
+    //add
     float mTabTextMultiLineSize;
 
     final int mTabBackgroundResId;
@@ -328,6 +349,16 @@ public class TabLayout extends HorizontalScrollView {
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.TabLayout,
                 defStyleAttr, R.style.LibraryTabLayout);
+        mTabStrip.setTabIndicatorShape(a.getInt(R.styleable.TabLayout_tabIndicatorShape, RECT));
+
+        if (a.hasValue(R.styleable.TabLayout_tabIndicatorStretch)) {
+            float stretch = a.getFloat(R.styleable.TabLayout_tabIndicatorStretch, 0f);
+            if (stretch >= 0 && stretch < 1) {
+                mTabStrip.setTabIndicatorStretch(stretch);
+            } else {
+                throw new IllegalArgumentException("stretch should be >=0 && <1");
+            }
+        }
 
         mTabStrip.setSelectedIndicatorWidth(a.getDimensionPixelSize(R.styleable.TabLayout_tabIndicatorWidth, 0));
 
@@ -338,7 +369,7 @@ public class TabLayout extends HorizontalScrollView {
 
         mTabStrip.setSelectedIndicatorHeight(
                 a.getDimensionPixelSize(R.styleable.TabLayout_tabIndicatorHeight, 0));
-        //增加end
+        //add
         mTabStrip.setSelectedIndicatorColor(a.getColor(R.styleable.TabLayout_tabIndicatorColor, 0));
 
         mTabPaddingStart = mTabPaddingTop = mTabPaddingEnd = mTabPaddingBottom = a
@@ -379,14 +410,18 @@ public class TabLayout extends HorizontalScrollView {
             final int selected = a.getColor(R.styleable.TabLayout_tabSelectedTextColor, 0);
             mTabTextColors = createColorStateList(mTabTextColors.getDefaultColor(), selected);
         }
+
         //add
         if (a.hasValue(R.styleable.TabLayout_tabTextSize)) {
             mTabTextSize = a.getDimensionPixelSize(
                     R.styleable.TabLayout_tabTextSize, 0);
         }
+
         if (a.hasValue(R.styleable.TabLayout_tabSelectedTextSize)) {
             mTabSelectedTextSize = a.getDimensionPixelSize(
                     R.styleable.TabLayout_tabSelectedTextSize, (int) mTabTextSize);
+        } else {
+            mTabSelectedTextSize = mTabTextSize;
         }
         //add
 
@@ -420,7 +455,7 @@ public class TabLayout extends HorizontalScrollView {
     }
 
     //增加
-    public void setSelectedTabIndicatorWidth(int width) {
+    public void setSelectedTabIndicatorWidth(@Px int width) {
         mTabStrip.setSelectedIndicatorWidth(width);
     }
 
@@ -428,7 +463,15 @@ public class TabLayout extends HorizontalScrollView {
         mTabStrip.setSelectedIndicatorEqual(equal);
     }
 
-    public void setSelectedTabIndicatorBottom(int bottom) {
+    public void setTabIndicatorShape(@IndicatorShape int shape) {
+        mTabStrip.setTabIndicatorShape(shape);
+    }
+
+    public void setTabIndicatorStretch(@FloatRange(from = 0, to = 1.0, toInclusive = false) float stretch) {
+        mTabStrip.setTabIndicatorStretch(stretch);
+    }
+
+    public void setSelectedTabIndicatorBottom(@Px int bottom) {
         mTabStrip.setSelectedIndicatorBottom(bottom);
     }
 
@@ -1684,7 +1727,7 @@ public class TabLayout extends HorizontalScrollView {
                     maxLines = 1;
                 } else if (mTextView != null && mTextView.getLineCount() > 1) {
                     // Otherwise when we have text which wraps we reduce the text size
-                    textSize = mTabTextMultiLineSize;
+                    textSize = mTextView.isSelected() ? mTabSelectedTextSize : mTabTextMultiLineSize;
                 }
 
                 final float curTextSize = mTextView.getTextSize();
@@ -1783,6 +1826,9 @@ public class TabLayout extends HorizontalScrollView {
                 if (mTabTextColors != null) {
                     mTextView.setTextColor(mTabTextColors);
                 }
+                if (mTabSelectedTextSize != mTabTextSize) {
+                    mTextView.setTextSize(mTextView.isSelected() ? mTabSelectedTextSize : mTabTextSize);
+                }
                 updateTextAndIcon(mTextView, mIconView);
             } else {
                 // Else, we'll see if there is a TextView or ImageView present and update them
@@ -1854,6 +1900,11 @@ public class TabLayout extends HorizontalScrollView {
     }
 
     private class SlidingTabStrip extends LinearLayout {
+        //add
+        private int mTabIndicatorShape;
+        private float mTabIndicatorStretch;
+        //add
+
         private int mSelectedIndicatorWidth;
         private int mSelectedIndicatorHeight;
         private int mSelectedIndicatorEqual;
@@ -1871,11 +1922,17 @@ public class TabLayout extends HorizontalScrollView {
 
         private ValueAnimator mIndicatorAnimator;
 
+        private RectF mRectF = new RectF();
+
         SlidingTabStrip(Context context) {
             super(context);
             setWillNotDraw(false);
             mSelectedIndicatorPaint = new Paint();
+            //add
+            mSelectedIndicatorPaint.setAntiAlias(true);
+            //add
         }
+
 
         void setSelectedIndicatorColor(int color) {
             if (mSelectedIndicatorPaint.getColor() != color) {
@@ -1885,6 +1942,21 @@ public class TabLayout extends HorizontalScrollView {
         }
 
         //增加
+
+        void setTabIndicatorShape(int shape) {
+            if (mTabIndicatorShape != shape) {
+                mTabIndicatorShape = shape;
+                ViewCompat.postInvalidateOnAnimation(this);
+            }
+        }
+
+        void setTabIndicatorStretch(float stretch) {
+            if (mTabIndicatorStretch != stretch) {
+                mTabIndicatorStretch = stretch;
+                ViewCompat.postInvalidateOnAnimation(this);
+            }
+        }
+
         void setSelectedIndicatorWidth(int width) {
             if (mSelectedIndicatorWidth != width) {
                 mSelectedIndicatorWidth = width;
@@ -2027,7 +2099,17 @@ public class TabLayout extends HorizontalScrollView {
             }
         }
 
-        //修改
+        private float calculateStretch(float offset) {
+            float value;
+            if (offset < 0.5) {
+                value = offset + offset * mTabIndicatorStretch;
+            } else {
+                value = offset + (1 - offset) * mTabIndicatorStretch;
+            }
+            return value;
+        }
+
+        //change
         private void updateIndicatorPosition() {
             final View selectedTitle = getChildAt(mSelectedPosition);
             int left, right;
@@ -2040,19 +2122,25 @@ public class TabLayout extends HorizontalScrollView {
                 if (mSelectionOffset > 0f && mSelectedPosition < getChildCount() - 1) {
                     // Draw the selection partway between the tabs
                     View nextTitle = getChildAt(mSelectedPosition + 1);
-
+                    //目标位置
                     int nextTitleD[] = getToTabStripLeftDistance(nextTitle);
-
-                    left = (int) (mSelectionOffset * nextTitleD[0] + (1.0f - mSelectionOffset) * left);
-                    right = (int) (mSelectionOffset * nextTitleD[1] + (1.0f - mSelectionOffset) * right);
+                    int targetLeft = nextTitleD[0];
+                    int targetRight = nextTitleD[1];
+                    final float fraction = mSelectionOffset;
+                    if (DEBUG) {
+                        Log.d(TAG, "fraction: " + fraction);
+                    }
+                    setIndicatorPosition(
+                            AnimationUtils.lerp(left, targetLeft, fraction),
+                            AnimationUtils.lerp(right, targetRight, calculateStretch(fraction)));
+                    return;
                 }
             } else {
                 left = right = -1;
             }
-
             setIndicatorPosition(left, right);
         }
-        //修改end
+        //change
 
 
         /**
@@ -2132,8 +2220,7 @@ public class TabLayout extends HorizontalScrollView {
         int[] getToTabStripLeftDistance(View tabView) {
             int lineWidth = getLineWidth(tabView);
             int left = tabView.getLeft() + (tabView.getWidth() - lineWidth) / 2;
-            int[] distances = new int[]{left, left + lineWidth};
-            return distances;
+            return new int[]{left, left + lineWidth};
         }
 
         void setIndicatorPosition(int left, int right) {
@@ -2198,9 +2285,19 @@ public class TabLayout extends HorizontalScrollView {
                     @Override
                     public void onAnimationUpdate(ValueAnimator animator) {
                         final float fraction = animator.getAnimatedFraction();
-                        setIndicatorPosition(
-                                AnimationUtils.lerp(startLeft, targetLeft, fraction),
-                                AnimationUtils.lerp(startRight, targetRight, fraction));
+                        if (DEBUG) {
+                            Log.d(TAG, "onAnimationUpdate: " + fraction);
+                        }
+
+                        if (startLeft < targetLeft) {
+                            setIndicatorPosition(
+                                    AnimationUtils.lerp(startLeft, targetLeft, fraction),
+                                    AnimationUtils.lerp(startRight, targetRight, calculateStretch(fraction)));
+                        } else {
+                            setIndicatorPosition(
+                                    AnimationUtils.lerp(startLeft, targetLeft, calculateStretch(fraction)),
+                                    AnimationUtils.lerp(startRight, targetRight, fraction));
+                        }
                     }
                 });
                 animator.addListener(new AnimatorListenerAdapter() {
@@ -2221,8 +2318,17 @@ public class TabLayout extends HorizontalScrollView {
             // Thick colored underline below the current selection
             if (mIndicatorLeft >= 0 && mIndicatorRight > mIndicatorLeft) {
                 int bottom = getHeight() - mSelectedIndicatorBottom;
-                canvas.drawRect(mIndicatorLeft, bottom - mSelectedIndicatorHeight,
-                        mIndicatorRight, bottom, mSelectedIndicatorPaint);
+
+                if (mTabIndicatorShape == ROUND_RECT) {
+                    mRectF.left = mIndicatorLeft;
+                    mRectF.top = bottom - mSelectedIndicatorHeight;
+                    mRectF.right = mIndicatorRight;
+                    mRectF.bottom = bottom;
+                    canvas.drawRoundRect(mRectF, mSelectedIndicatorHeight / 2, mSelectedIndicatorHeight / 2, mSelectedIndicatorPaint);
+                } else {
+                    canvas.drawRect(mIndicatorLeft, bottom - mSelectedIndicatorHeight,
+                            mIndicatorRight, bottom, mSelectedIndicatorPaint);
+                }
             }
         }
     }

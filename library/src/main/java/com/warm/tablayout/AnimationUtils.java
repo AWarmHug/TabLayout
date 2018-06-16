@@ -19,6 +19,7 @@ package com.warm.tablayout;
 import android.support.v4.view.animation.FastOutLinearInInterpolator;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
+import android.view.animation.BounceInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
@@ -30,6 +31,7 @@ class AnimationUtils {
     static final Interpolator FAST_OUT_LINEAR_IN_INTERPOLATOR = new FastOutLinearInInterpolator();
     static final Interpolator LINEAR_OUT_SLOW_IN_INTERPOLATOR = new LinearOutSlowInInterpolator();
     static final Interpolator DECELERATE_INTERPOLATOR = new DecelerateInterpolator();
+    static final Interpolator BOUNCE_INTERPOLATOR = new BounceInterpolator();
 
     /**
      * Linear interpolation between {@code startValue} and {@code endValue} by {@code fraction}.

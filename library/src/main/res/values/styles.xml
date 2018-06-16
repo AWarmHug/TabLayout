@@ -9,14 +9,13 @@
     <style name="LibraryTabLayout" parent="android:Widget">
         <item name="tabMaxWidth">@dimen/design_tab_max_width</item>
         <item name="tabIndicatorColor">?attr/colorAccent</item>
+        <item name="tabIndicatorShape">rect</item>
         <item name="tabIndicatorEqual">equalToTab</item>
         <item name="tabIndicatorHeight">2dp</item>
         <item name="tabPaddingStart">12dp</item>
         <item name="tabPaddingEnd">12dp</item>
         <item name="tabBackground">?attr/selectableItemBackground</item>
         <item name="tabTextAppearance">@style/LibraryTextAppearanceTab</item>
-        <item name="tabTextSize">@dimen/design_tab_text_size</item>
-        <item name="tabSelectedTextSize">@dimen/design_tab_text_size</item>
         <item name="tabSelectedTextColor">?android:textColorPrimary</item>
         <item name="tabGravity">fill</item>
         <item name="tabMode">fixed</item>

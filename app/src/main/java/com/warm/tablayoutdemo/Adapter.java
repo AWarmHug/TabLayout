@@ -11,10 +11,13 @@ import android.support.v4.app.FragmentStatePagerAdapter;
  * 描述：
  */
 public class Adapter extends FragmentStatePagerAdapter {
+    private int size;
 
-    public Adapter(FragmentManager fm) {
+    public Adapter(FragmentManager fm,int size) {
         super(fm);
+        this.size=size;
     }
+
 
     @Override
     public Fragment getItem(int position) {
@@ -23,7 +26,7 @@ public class Adapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return 10;
+        return size;
     }
 
     @Nullable

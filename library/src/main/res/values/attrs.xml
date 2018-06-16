@@ -7,12 +7,17 @@
     </declare-styleable>
 
     <declare-styleable name="TabLayout">
+        <attr name="tabIndicatorShape" format="enum">
+            <enum name="rect" value="0" />
+            <enum name="roundRect" value="1" />
+        </attr>
+        <attr name="tabIndicatorStretch" format="float" />
         <attr name="tabIndicatorColor" format="color" />
         <attr name="tabIndicatorEqual" format="enum">
-            <enum name="equalToTab" value="-1" />
-            <enum name="equalToText" value="-2" />
-            <enum name="equalToIcon" value="-3" />
-            <enum name="equalToCustom" value="-4" />
+            <enum name="equalToTab" value="0" />
+            <enum name="equalToText" value="1" />
+            <enum name="equalToIcon" value="2" />
+            <enum name="equalToCustom" value="3" />
         </attr>
         <attr name="tabIndicatorWidth" format="dimension" />
         <attr name="tabIndicatorHeight" format="dimension" />
