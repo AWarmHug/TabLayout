@@ -151,7 +151,7 @@ import static android.support.v4.view.ViewPager.SCROLL_STATE_SETTLING;
 public class TabLayout extends HorizontalScrollView {
 
     private static final String TAG = "TabLayout";
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
 
     private static final int DEFAULT_HEIGHT_WITH_TEXT_ICON = 72; // dps
     static final int DEFAULT_GAP_TEXT_ICON = 8; // dps
