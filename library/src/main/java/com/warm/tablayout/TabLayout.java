@@ -184,6 +184,7 @@ public class TabLayout extends HorizontalScrollView {
      * @see #getTabMode()
      */
     public static final int MODE_FIXED = 1;
+    private Drawable mDrawable;
 
     /**
      * @hide
@@ -242,11 +243,13 @@ public class TabLayout extends HorizontalScrollView {
 
     public static final int ROUND_RECT = 1;
 
+    public static final int DRAWABLE = 2;
+
     /**
      * @hide
      */
     @RestrictTo(LIBRARY_GROUP)
-    @IntDef(flag = true, value = {RECT, ROUND_RECT})
+    @IntDef(flag = true, value = {RECT, ROUND_RECT, DRAWABLE})
     @Retention(RetentionPolicy.SOURCE)
     public @interface IndicatorShape {
     }
@@ -349,7 +352,11 @@ public class TabLayout extends HorizontalScrollView {
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.TabLayout,
                 defStyleAttr, R.style.LibraryTabLayout);
-        mTabStrip.setTabIndicatorShape(a.getInt(R.styleable.TabLayout_tabIndicatorShape, RECT));
+        int shape = a.getInt(R.styleable.TabLayout_tabIndicatorShape, RECT);
+        mTabStrip.setTabIndicatorShape(shape);
+        if(shape == DRAWABLE){
+            mDrawable = a.getDrawable(R.styleable.TabLayout_tabIndicatorDrawable);
+        }
 
         if (a.hasValue(R.styleable.TabLayout_tabIndicatorStretch)) {
             float stretch = a.getFloat(R.styleable.TabLayout_tabIndicatorStretch, 0f);
@@ -2327,6 +2334,9 @@ public class TabLayout extends HorizontalScrollView {
                     mRectF.right = mIndicatorRight;
                     mRectF.bottom = bottom;
                     canvas.drawRoundRect(mRectF, mSelectedIndicatorHeight / 2, mSelectedIndicatorHeight / 2, mSelectedIndicatorPaint);
+                } else if(mTabIndicatorShape == DRAWABLE) {
+                    mDrawable.setBounds(mIndicatorLeft, bottom - mSelectedIndicatorHeight, mIndicatorRight, bottom);
+                    mDrawable.draw(canvas);
                 } else {
                     canvas.drawRect(mIndicatorLeft, bottom - mSelectedIndicatorHeight,
                             mIndicatorRight, bottom, mSelectedIndicatorPaint);

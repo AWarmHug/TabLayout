@@ -14,6 +14,16 @@
 
 具体可以查看res/values/attrs
 
+### Modification
+
+tabIndicatorShape now accepts drawable as Indicator.
+
+You must specific the drawable by setting tabIndicatorDrawable attribute.
+
+现在tabIndicatorShape接受drawable作为参数
+
+必须通过tabIndicatorDrawable参数指定你想要使用的drawable。
+
 ```
 <attr name="tabIndicatorEqual" format="enum">
     <enum name="equalToTab" value="-1" />
@@ -28,9 +38,11 @@
 <attr name="tabSelectedTextSize" format="dimension" />
 
 <attr name="tabIndicatorShape" format="enum">
-    <enum name="rect" value="0" />
-    enum name="roundRect" value="1" />
-</attr>
+            <enum name="rect" value="0" />
+            <enum name="roundRect" value="1" />
+            <enum name="drawable" value="2" />
+        </attr>
+<attr name="tabIndicatorDrawable" format="reference" />
 <attr name="tabIndicatorStretch" format="float" />
 ```
 
