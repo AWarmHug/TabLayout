@@ -10,7 +10,9 @@
         <attr name="tabIndicatorShape" format="enum">
             <enum name="rect" value="0" />
             <enum name="roundRect" value="1" />
+            <enum name="drawable" value="2" />
         </attr>
+        <attr name="tabIndicatorDrawable" format="reference" />
         <attr name="tabIndicatorStretch" format="float" />
         <attr name="tabIndicatorColor" format="color" />
         <attr name="tabIndicatorEqual" format="enum">
