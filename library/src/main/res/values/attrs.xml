@@ -6,44 +6,51 @@
         <attr name="android:layout" />
     </declare-styleable>
 
-    <declare-styleable name="TabLayout">
-        <attr name="tabIndicatorShape" format="enum">
-            <enum name="rect" value="0" />
-            <enum name="roundRect" value="1" />
+
+    <declare-styleable name="ExTabLayout">
+        <attr name="exTabIndicatorDrawable" format="reference" />
+        <attr name="exTabIndicatorGravity" format="enum">
+            <enum name="top" value="0" />
+            <enum name="center" value="1" />
+            <enum name="bottom" value="2" />
         </attr>
-        <attr name="tabIndicatorStretch" format="float" />
-        <attr name="tabIndicatorColor" format="color" />
-        <attr name="tabIndicatorEqual" format="enum">
-            <enum name="equalToTab" value="0" />
-            <enum name="equalToText" value="1" />
-            <enum name="equalToIcon" value="2" />
-            <enum name="equalToCustom" value="3" />
+        <attr name="exTabIndicatorStretch" format="float" />
+        <attr name="exTabIndicatorColor" format="color" />
+        <attr name="exTabIndicatorWidth" format="dimension|enum">
+            <enum name="equalToTab" value="-1" />
+            <enum name="equalToText" value="-2" />
+            <enum name="equalToIcon" value="-3" />
+            <enum name="equalToCustom" value="-4" />
         </attr>
-        <attr name="tabIndicatorWidth" format="dimension" />
-        <attr name="tabIndicatorHeight" format="dimension" />
-        <attr name="tabIndicatorBottom" format="dimension" />
-        <attr name="tabContentStart" format="dimension" />
-        <attr name="tabBackground" format="reference" />
-        <attr name="tabMode">
+        <attr name="exTabIndicatorHeight" format="dimension|enum">
+            <enum name="equalToTab" value="-1" />
+            <enum name="equalToText" value="-2" />
+            <enum name="equalToIcon" value="-3" />
+            <enum name="equalToCustom" value="-4" />
+        </attr>
+        <attr name="exTabIndicatorBottom" format="dimension" />
+        <attr name="exTabContentStart" format="dimension" />
+        <attr name="exTabBackground" format="reference" />
+        <attr name="exTabMode">
             <enum name="scrollable" value="0" />
             <enum name="fixed" value="1" />
         </attr>
-        <attr name="tabGravity">
+        <attr name="exTabGravity">
             <enum name="fill" value="0" />
             <enum name="center" value="1" />
         </attr>
-        <attr name="tabMinWidth" format="dimension" />
-        <attr name="tabMaxWidth" format="dimension" />
-        <attr name="tabTextAppearance" format="reference" />
-        <attr name="tabTextSize" format="dimension" />
-        <attr name="tabSelectedTextSize" format="dimension" />
-        <attr name="tabTextColor" format="color" />
-        <attr name="tabSelectedTextColor" format="color" />
-        <attr name="tabPaddingStart" format="dimension" />
-        <attr name="tabPaddingTop" format="dimension" />
-        <attr name="tabPaddingEnd" format="dimension" />
-        <attr name="tabPaddingBottom" format="dimension" />
-        <attr name="tabPadding" format="dimension" />
+        <attr name="exTabMinWidth" format="dimension" />
+        <attr name="exTabMaxWidth" format="dimension" />
+        <attr name="exTabTextAppearance" format="reference" />
+        <attr name="exTabTextSize" format="dimension" />
+        <attr name="exTabSelectedTextSize" format="dimension" />
+        <attr name="exTabTextColor" format="color" />
+        <attr name="exTabSelectedTextColor" format="color" />
+        <attr name="exTabPaddingStart" format="dimension" />
+        <attr name="exTabPaddingTop" format="dimension" />
+        <attr name="exTabPaddingEnd" format="dimension" />
+        <attr name="exTabPaddingBottom" format="dimension" />
+        <attr name="exTabPadding" format="dimension" />
     </declare-styleable>
 
 </resources>

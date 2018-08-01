@@ -13,40 +13,58 @@
 
     </android.support.design.widget.TabLayout>
 
-    <com.warm.tablayout.TabLayout
+    <com.warm.tablayout.ExTabLayout
         android:id="@+id/tab_my"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tab_design"
-        app:tabBackground="@color/colorPrimary"
-        app:tabIndicatorBottom="4dp"
-        app:tabIndicatorEqual="equalToText"
-        app:tabIndicatorHeight="2dp"
-        app:tabSelectedTextSize="16sp"
-        app:tabTextSize="14sp">
+        app:exTabBackground="@drawable/item_background_holo_light"
+        app:exTabIndicatorBottom="4dp"
+        app:exTabIndicatorWidth="24dp"
+        app:exTabSelectedTextSize="16sp"
+        app:exTabTextSize="14sp">
 
-    </com.warm.tablayout.TabLayout>
+    </com.warm.tablayout.ExTabLayout>
 
-    <com.warm.tablayout.TabLayout
+    <com.warm.tablayout.ExTabLayout
         android:id="@+id/tab_my2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tab_my"
-        app:tabIndicatorBottom="4dp"
-        app:tabIndicatorHeight="2dp"
-        app:tabIndicatorShape="roundRect"
-        app:tabIndicatorStretch="0.6"
-        app:tabIndicatorWidth="24dp"
-        app:tabSelectedTextSize="16sp"
-        app:tabTextSize="14sp">
+        android:background="@color/colorPrimary"
+        app:exTabIndicatorDrawable="@drawable/indicator_white_nocorners"
+        app:exTabIndicatorGravity="center"
+        app:exTabIndicatorHeight="equalToTab"
+        app:exTabIndicatorStretch="0.8"
+        app:exTabIndicatorWidth="equalToTab"
+        app:exTabSelectedTextColor="#FF213E"
+        app:exTabSelectedTextSize="16sp"
+        app:exTabTextSize="14sp">
 
-    </com.warm.tablayout.TabLayout>
+    </com.warm.tablayout.ExTabLayout>
+
+    <com.warm.tablayout.ExTabLayout
+        android:id="@+id/tab_custom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tab_my2"
+        android:background="#DE0013"
+        app:exTabIndicatorDrawable="@drawable/indicator_white"
+        app:exTabIndicatorGravity="center"
+        app:exTabIndicatorHeight="24dp"
+        app:exTabIndicatorWidth="equalToCustom"
+        app:exTabSelectedTextColor="#DE0013"
+        app:exTabSelectedTextSize="16sp"
+        app:exTabTextSize="14sp">
+
+    </com.warm.tablayout.ExTabLayout>
+
 
     <android.support.v4.view.ViewPager
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/tab_my2">
+        android:layout_below="@+id/tab_custom">
 
     </android.support.v4.view.ViewPager>
 

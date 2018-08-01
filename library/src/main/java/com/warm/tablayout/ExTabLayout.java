@@ -26,7 +26,6 @@ import android.content.res.TypedArray;
 import android.database.DataSetObserver;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.ColorInt;
@@ -148,10 +147,10 @@ import static android.support.v4.view.ViewPager.SCROLL_STATE_SETTLING;
  * @see <a href="http://www.google.com/design/spec/components/tabs.html">Tabs</a>
  */
 @ViewPager.DecorView
-public class TabLayout extends HorizontalScrollView {
+public class ExTabLayout extends HorizontalScrollView {
 
     private static final String TAG = "TabLayout";
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
 
     private static final int DEFAULT_HEIGHT_WITH_TEXT_ICON = 72; // dps
     static final int DEFAULT_GAP_TEXT_ICON = 8; // dps
@@ -195,7 +194,7 @@ public class TabLayout extends HorizontalScrollView {
     }
 
     /**
-     * Gravity used to fill the {@link TabLayout} as much as possible. This option only takes effect
+     * Gravity used to fill the {@link ExTabLayout} as much as possible. This option only takes effect
      * when used with {@link #MODE_FIXED}.
      *
      * @see #setTabGravity(int)
@@ -204,7 +203,7 @@ public class TabLayout extends HorizontalScrollView {
     public static final int GRAVITY_FILL = 0;
 
     /**
-     * Gravity used to lay out the tabs in the center of the {@link TabLayout}.
+     * Gravity used to lay out the tabs in the center of the {@link ExTabLayout}.
      *
      * @see #setTabGravity(int)
      * @see #getTabGravity()
@@ -221,35 +220,27 @@ public class TabLayout extends HorizontalScrollView {
     }
 
     //add
-    public static final int EQUAL_TO_TAB = 0;
+    public static final int TOP = 0;
 
-    public static final int EQUAL_TO_TEXT = 1;
+    public static final int CENTER = 1;
 
-    public static final int EQUAL_TO_ICON = 2;
+    public static final int BOTTOM = 2;
 
-    public static final int EQUAL_TO_CUSTOM = 3;
-
-    /**
-     * @hide
-     */
     @RestrictTo(LIBRARY_GROUP)
-    @IntDef(flag = true, value = {EQUAL_TO_TAB, EQUAL_TO_TEXT, EQUAL_TO_ICON, EQUAL_TO_CUSTOM})
+    @IntDef(flag = true, value = {TOP, CENTER, BOTTOM})
     @Retention(RetentionPolicy.SOURCE)
-    public @interface IndicatorWidth {
+    public @interface IndicatorGravity {
     }
 
-    public static final int RECT = 0;
 
-    public static final int ROUND_RECT = 1;
+    public static final int EQUAL_TO_TAB = -1;
 
-    /**
-     * @hide
-     */
-    @RestrictTo(LIBRARY_GROUP)
-    @IntDef(flag = true, value = {RECT, ROUND_RECT})
-    @Retention(RetentionPolicy.SOURCE)
-    public @interface IndicatorShape {
-    }
+    public static final int EQUAL_TO_TEXT = -2;
+
+    public static final int EQUAL_TO_ICON = -3;
+
+    public static final int EQUAL_TO_CUSTOM = -4;
+
     //add
 
 
@@ -327,15 +318,15 @@ public class TabLayout extends HorizontalScrollView {
     // Pool we use as a simple RecyclerBin
     private final Pools.Pool<TabView> mTabViewPool = new Pools.SimplePool<>(12);
 
-    public TabLayout(Context context) {
+    public ExTabLayout(Context context) {
         this(context, null);
     }
 
-    public TabLayout(Context context, AttributeSet attrs) {
+    public ExTabLayout(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public TabLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+    public ExTabLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
         ThemeUtils.checkAppCompatTheme(context);
@@ -347,43 +338,83 @@ public class TabLayout extends HorizontalScrollView {
         super.addView(mTabStrip, 0, new LayoutParams(
                 LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT));
 
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.TabLayout,
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ExTabLayout,
                 defStyleAttr, R.style.LibraryTabLayout);
-        mTabStrip.setTabIndicatorShape(a.getInt(R.styleable.TabLayout_tabIndicatorShape, RECT));
 
-        if (a.hasValue(R.styleable.TabLayout_tabIndicatorStretch)) {
-            float stretch = a.getFloat(R.styleable.TabLayout_tabIndicatorStretch, 0f);
+        if (a.hasValue(R.styleable.ExTabLayout_exTabIndicatorStretch)) {
+            float stretch = a.getFloat(R.styleable.ExTabLayout_exTabIndicatorStretch, 0f);
             if (stretch >= 0 && stretch < 1) {
                 mTabStrip.setTabIndicatorStretch(stretch);
             } else {
                 throw new IllegalArgumentException("stretch should be >=0 && <1");
             }
         }
+//        TypedValue
 
-        mTabStrip.setSelectedIndicatorWidth(a.getDimensionPixelSize(R.styleable.TabLayout_tabIndicatorWidth, 0));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (a.getType(R.styleable.ExTabLayout_exTabIndicatorWidth) == TypedValue.TYPE_INT_DEC) {
+                mTabStrip.setSelectedIndicatorWidth(a.getInt(R.styleable.ExTabLayout_exTabIndicatorWidth, EQUAL_TO_TAB));
+            } else {
+                mTabStrip.setSelectedIndicatorWidth(a.getDimensionPixelSize(R.styleable.ExTabLayout_exTabIndicatorWidth, 0));
+            }
 
-        mTabStrip.setSelectedIndicatorEqual(a.getInt(R.styleable.TabLayout_tabIndicatorEqual, EQUAL_TO_TAB));
+            if (a.getType(R.styleable.ExTabLayout_exTabIndicatorHeight) == TypedValue.TYPE_INT_DEC) {
+                mTabStrip.setSelectedIndicatorHeight(a.getInt(R.styleable.ExTabLayout_exTabIndicatorHeight, EQUAL_TO_TAB));
+            } else {
+                mTabStrip.setSelectedIndicatorHeight(a.getDimensionPixelSize(R.styleable.ExTabLayout_exTabIndicatorHeight, 0));
+            }
 
-        mTabStrip.setSelectedIndicatorBottom(
-                a.getDimensionPixelSize(R.styleable.TabLayout_tabIndicatorBottom, 0));
+        } else {
+            TypedValue typedValue = new TypedValue();
+            if (a.getValue(R.styleable.ExTabLayout_exTabIndicatorWidth, typedValue)) {
+                if (typedValue.type == TypedValue.TYPE_INT_DEC) {
+                    mTabStrip.setSelectedIndicatorWidth(a.getInt(R.styleable.ExTabLayout_exTabIndicatorWidth, EQUAL_TO_TAB));
+                } else {
+                    mTabStrip.setSelectedIndicatorWidth(a.getDimensionPixelSize(R.styleable.ExTabLayout_exTabIndicatorWidth, 0));
+                }
+            } else {
+                try {
+                    mTabStrip.setSelectedIndicatorWidth(a.getInt(R.styleable.ExTabLayout_exTabIndicatorWidth, EQUAL_TO_TAB));
+                } catch (RuntimeException ignored) {
+                    mTabStrip.setSelectedIndicatorWidth(a.getDimensionPixelSize(R.styleable.ExTabLayout_exTabIndicatorWidth, 0));
+                }
+            }
 
-        mTabStrip.setSelectedIndicatorHeight(
-                a.getDimensionPixelSize(R.styleable.TabLayout_tabIndicatorHeight, 0));
-        //add
-        mTabStrip.setSelectedIndicatorColor(a.getColor(R.styleable.TabLayout_tabIndicatorColor, 0));
+            if (a.getValue(R.styleable.ExTabLayout_exTabIndicatorHeight, typedValue)) {
+                if (typedValue.type == TypedValue.TYPE_INT_DEC) {
+                    mTabStrip.setSelectedIndicatorHeight(a.getInt(R.styleable.ExTabLayout_exTabIndicatorHeight, EQUAL_TO_TAB));
+                } else {
+                    mTabStrip.setSelectedIndicatorHeight(a.getDimensionPixelSize(R.styleable.ExTabLayout_exTabIndicatorHeight, 0));
+                }
+            } else {
+                try {
+                    mTabStrip.setSelectedIndicatorHeight(a.getInt(R.styleable.ExTabLayout_exTabIndicatorHeight, EQUAL_TO_TAB));
+                } catch (RuntimeException ignored) {
+                    mTabStrip.setSelectedIndicatorHeight(a.getDimensionPixelSize(R.styleable.ExTabLayout_exTabIndicatorHeight, 0));
+                }
+            }
+        }
+
+        mTabStrip.setSelectedIndicatorBottom(a.getDimensionPixelSize(R.styleable.ExTabLayout_exTabIndicatorBottom, 0));
+
+        mTabStrip.setTabIndicatorDrawable(a.getDrawable(R.styleable.ExTabLayout_exTabIndicatorDrawable));
+
+        mTabStrip.setTabIndicatorGravity(a.getInt(R.styleable.ExTabLayout_exTabIndicatorGravity, BOTTOM));
+
+        mTabStrip.setSelectedIndicatorColor(a.getColor(R.styleable.ExTabLayout_exTabIndicatorColor, 0));
 
         mTabPaddingStart = mTabPaddingTop = mTabPaddingEnd = mTabPaddingBottom = a
-                .getDimensionPixelSize(R.styleable.TabLayout_tabPadding, 0);
-        mTabPaddingStart = a.getDimensionPixelSize(R.styleable.TabLayout_tabPaddingStart,
+                .getDimensionPixelSize(R.styleable.ExTabLayout_exTabPadding, 0);
+        mTabPaddingStart = a.getDimensionPixelSize(R.styleable.ExTabLayout_exTabPaddingStart,
                 mTabPaddingStart);
-        mTabPaddingTop = a.getDimensionPixelSize(R.styleable.TabLayout_tabPaddingTop,
+        mTabPaddingTop = a.getDimensionPixelSize(R.styleable.ExTabLayout_exTabPaddingTop,
                 mTabPaddingTop);
-        mTabPaddingEnd = a.getDimensionPixelSize(R.styleable.TabLayout_tabPaddingEnd,
+        mTabPaddingEnd = a.getDimensionPixelSize(R.styleable.ExTabLayout_exTabPaddingEnd,
                 mTabPaddingEnd);
-        mTabPaddingBottom = a.getDimensionPixelSize(R.styleable.TabLayout_tabPaddingBottom,
+        mTabPaddingBottom = a.getDimensionPixelSize(R.styleable.ExTabLayout_exTabPaddingBottom,
                 mTabPaddingBottom);
 
-        mTabTextAppearance = a.getResourceId(R.styleable.TabLayout_tabTextAppearance,
+        mTabTextAppearance = a.getResourceId(R.styleable.ExTabLayout_exTabTextAppearance,
                 R.style.LibraryTextAppearanceTab);
 
         // Text colors/sizes come from the text appearance first
@@ -398,41 +429,41 @@ public class TabLayout extends HorizontalScrollView {
             ta.recycle();
         }
 
-        if (a.hasValue(R.styleable.TabLayout_tabTextColor)) {
+        if (a.hasValue(R.styleable.ExTabLayout_exTabTextColor)) {
             // If we have an explicit text color set, use it instead
-            mTabTextColors = a.getColorStateList(R.styleable.TabLayout_tabTextColor);
+            mTabTextColors = a.getColorStateList(R.styleable.ExTabLayout_exTabTextColor);
         }
 
-        if (a.hasValue(R.styleable.TabLayout_tabSelectedTextColor)) {
+        if (a.hasValue(R.styleable.ExTabLayout_exTabSelectedTextColor)) {
             // We have an explicit selected text color set, so we need to make merge it with the
             // current colors. This is exposed so that developers can use theme attributes to set
             // this (theme attrs in ColorStateLists are Lollipop+)
-            final int selected = a.getColor(R.styleable.TabLayout_tabSelectedTextColor, 0);
+            final int selected = a.getColor(R.styleable.ExTabLayout_exTabSelectedTextColor, 0);
             mTabTextColors = createColorStateList(mTabTextColors.getDefaultColor(), selected);
         }
 
         //add
-        if (a.hasValue(R.styleable.TabLayout_tabTextSize)) {
+        if (a.hasValue(R.styleable.ExTabLayout_exTabTextSize)) {
             mTabTextSize = a.getDimensionPixelSize(
-                    R.styleable.TabLayout_tabTextSize, 0);
+                    R.styleable.ExTabLayout_exTabTextSize, 0);
         }
 
-        if (a.hasValue(R.styleable.TabLayout_tabSelectedTextSize)) {
+        if (a.hasValue(R.styleable.ExTabLayout_exTabSelectedTextSize)) {
             mTabSelectedTextSize = a.getDimensionPixelSize(
-                    R.styleable.TabLayout_tabSelectedTextSize, (int) mTabTextSize);
+                    R.styleable.ExTabLayout_exTabSelectedTextSize, (int) mTabTextSize);
         } else {
             mTabSelectedTextSize = mTabTextSize;
         }
         //add
 
-        mRequestedTabMinWidth = a.getDimensionPixelSize(R.styleable.TabLayout_tabMinWidth,
+        mRequestedTabMinWidth = a.getDimensionPixelSize(R.styleable.ExTabLayout_exTabMinWidth,
                 INVALID_WIDTH);
-        mRequestedTabMaxWidth = a.getDimensionPixelSize(R.styleable.TabLayout_tabMaxWidth,
+        mRequestedTabMaxWidth = a.getDimensionPixelSize(R.styleable.ExTabLayout_exTabMaxWidth,
                 INVALID_WIDTH);
-        mTabBackgroundResId = a.getResourceId(R.styleable.TabLayout_tabBackground, 0);
-        mContentInsetStart = a.getDimensionPixelSize(R.styleable.TabLayout_tabContentStart, 0);
-        mMode = a.getInt(R.styleable.TabLayout_tabMode, MODE_FIXED);
-        mTabGravity = a.getInt(R.styleable.TabLayout_tabGravity, GRAVITY_FILL);
+        mTabBackgroundResId = a.getResourceId(R.styleable.ExTabLayout_exTabBackground, 0);
+        mContentInsetStart = a.getDimensionPixelSize(R.styleable.ExTabLayout_exTabContentStart, 0);
+        mMode = a.getInt(R.styleable.ExTabLayout_exTabMode, MODE_FIXED);
+        mTabGravity = a.getInt(R.styleable.ExTabLayout_exTabGravity, GRAVITY_FILL);
         a.recycle();
 
         // TODO add attr for these
@@ -443,6 +474,7 @@ public class TabLayout extends HorizontalScrollView {
         // Now apply the tab mode and gravity
         applyModeAndGravity();
     }
+
 
     /**
      * Sets the tab indicator's color for the currently selected tab.
@@ -455,16 +487,16 @@ public class TabLayout extends HorizontalScrollView {
     }
 
     //增加
+    public void setTabIndicatorDrawable(@DrawableRes int drawable) {
+        mTabStrip.setTabIndicatorDrawable(AppCompatResources.getDrawable(getContext(), drawable));
+    }
+
+    public void setTabIndicatorGravity(@IndicatorGravity int gravity) {
+        mTabStrip.setTabIndicatorGravity(gravity);
+    }
+
     public void setSelectedTabIndicatorWidth(@Px int width) {
         mTabStrip.setSelectedIndicatorWidth(width);
-    }
-
-    public void setSelectedTabIndicatorEqual(@IndicatorWidth int equal) {
-        mTabStrip.setSelectedIndicatorEqual(equal);
-    }
-
-    public void setTabIndicatorShape(@IndicatorShape int shape) {
-        mTabStrip.setTabIndicatorShape(shape);
     }
 
     public void setTabIndicatorStretch(@FloatRange(from = 0, to = 1.0, toInclusive = false) float stretch) {
@@ -477,12 +509,6 @@ public class TabLayout extends HorizontalScrollView {
 
     //增加end
 
-    /**
-     * Sets the tab indicator's height for the currently selected tab.
-     *
-     * @param height height to use for the indicator in pixels
-     * @attr ref android.support.design.R.styleable#TabLayout_tabIndicatorHeight
-     */
     public void setSelectedTabIndicatorHeight(int height) {
         mTabStrip.setSelectedIndicatorHeight(height);
     }
@@ -508,7 +534,6 @@ public class TabLayout extends HorizontalScrollView {
         if (roundedPosition < 0 || roundedPosition >= mTabStrip.getChildCount()) {
             return;
         }
-
         // Set the indicator position, if enabled
         if (updateIndicatorPosition) {
             mTabStrip.setIndicatorPositionFromTabPosition(position, positionOffset);
@@ -617,7 +642,7 @@ public class TabLayout extends HorizontalScrollView {
     }
 
     /**
-     * Add a {@link TabLayout.OnTabSelectedListener} that will be invoked when tab selection
+     * Add a {@link ExTabLayout.OnTabSelectedListener} that will be invoked when tab selection
      * changes.
      * <p>
      * <p>Components that add a listener should take care to remove it when finished via
@@ -632,7 +657,7 @@ public class TabLayout extends HorizontalScrollView {
     }
 
     /**
-     * Remove the given {@link TabLayout.OnTabSelectedListener} that was previously added via
+     * Remove the given {@link ExTabLayout.OnTabSelectedListener} that was previously added via
      * {@link #addOnTabSelectedListener(OnTabSelectedListener)}.
      *
      * @param listener listener to remove
@@ -642,7 +667,7 @@ public class TabLayout extends HorizontalScrollView {
     }
 
     /**
-     * Remove all previously added {@link TabLayout.OnTabSelectedListener}s.
+     * Remove all previously added {@link ExTabLayout.OnTabSelectedListener}s.
      */
     public void clearOnTabSelectedListeners() {
         mSelectedListeners.clear();
@@ -773,7 +798,7 @@ public class TabLayout extends HorizontalScrollView {
     }
 
     /**
-     * Returns the current mode used by this {@link TabLayout}.
+     * Returns the current mode used by this {@link ExTabLayout}.
      *
      * @see #setTabMode(int)
      */
@@ -852,7 +877,7 @@ public class TabLayout extends HorizontalScrollView {
     }
 
     /**
-     * The one-stop shop for setting up this {@link TabLayout} with a {@link ViewPager}.
+     * The one-stop shop for setting up this {@link ExTabLayout} with a {@link ViewPager}.
      * <p>
      * <p>This is the same as calling {@link #setupWithViewPager(ViewPager, boolean)} with
      * auto-refresh enabled.</p>
@@ -864,7 +889,7 @@ public class TabLayout extends HorizontalScrollView {
     }
 
     /**
-     * The one-stop shop for setting up this {@link TabLayout} with a {@link ViewPager}.
+     * The one-stop shop for setting up this {@link ExTabLayout} with a {@link ViewPager}.
      * <p>
      * <p>This method will link the given ViewPager and this TabLayout together so that
      * changes in one are automatically reflected in the other. This includes scroll state changes
@@ -1202,6 +1227,7 @@ public class TabLayout extends HorizontalScrollView {
         }
 
         // Now animate the indicator
+        // TODO: 2018/8/1
         mTabStrip.animateIndicatorToPosition(newPosition, ANIMATION_DURATION);
     }
 
@@ -1359,7 +1385,7 @@ public class TabLayout extends HorizontalScrollView {
         private int mPosition = INVALID_POSITION;
         private View mCustomView;
 
-        TabLayout mParent;
+        ExTabLayout mParent;
         TabView mView;
 
         Tab() {
@@ -1808,7 +1834,6 @@ public class TabLayout extends HorizontalScrollView {
                 mCustomTextView = null;
                 mCustomIconView = null;
             }
-
             if (mCustomView == null) {
                 // If there isn't a custom view, we'll us our own in-built layouts
                 if (mIconView == null) {
@@ -1903,13 +1928,12 @@ public class TabLayout extends HorizontalScrollView {
 
     private class SlidingTabStrip extends LinearLayout {
         //add
-        private int mTabIndicatorShape;
+        private int mTabIndicatorGravity;
         private float mTabIndicatorStretch;
+        private Drawable mTabIndicatorDrawable;
         //add
-
         private int mSelectedIndicatorWidth;
         private int mSelectedIndicatorHeight;
-        private int mSelectedIndicatorEqual;
         private int mSelectedIndicatorBottom;
 
         private final Paint mSelectedIndicatorPaint;
@@ -1923,8 +1947,6 @@ public class TabLayout extends HorizontalScrollView {
         private int mIndicatorRight = -1;
 
         private ValueAnimator mIndicatorAnimator;
-
-        private RectF mRectF = new RectF();
 
         SlidingTabStrip(Context context) {
             super(context);
@@ -1944,10 +1966,16 @@ public class TabLayout extends HorizontalScrollView {
         }
 
         //增加
+        void setTabIndicatorGravity(int gravity) {
+            if (mTabIndicatorGravity != gravity) {
+                mTabIndicatorGravity = gravity;
+                ViewCompat.postInvalidateOnAnimation(this);
+            }
+        }
 
-        void setTabIndicatorShape(int shape) {
-            if (mTabIndicatorShape != shape) {
-                mTabIndicatorShape = shape;
+        void setTabIndicatorDrawable(Drawable backgroundDrawable) {
+            if (mTabIndicatorDrawable == null || mTabIndicatorDrawable != backgroundDrawable) {
+                mTabIndicatorDrawable = backgroundDrawable;
                 ViewCompat.postInvalidateOnAnimation(this);
             }
         }
@@ -1962,13 +1990,6 @@ public class TabLayout extends HorizontalScrollView {
         void setSelectedIndicatorWidth(int width) {
             if (mSelectedIndicatorWidth != width) {
                 mSelectedIndicatorWidth = width;
-                ViewCompat.postInvalidateOnAnimation(this);
-            }
-        }
-
-        void setSelectedIndicatorEqual(int equal) {
-            if (mSelectedIndicatorEqual != equal) {
-                mSelectedIndicatorEqual = equal;
                 ViewCompat.postInvalidateOnAnimation(this);
             }
         }
@@ -1998,6 +2019,7 @@ public class TabLayout extends HorizontalScrollView {
             return false;
         }
 
+        // TODO: 2018/8/1  
         void setIndicatorPositionFromTabPosition(int position, float positionOffset) {
             if (mIndicatorAnimator != null && mIndicatorAnimator.isRunning()) {
                 mIndicatorAnimator.cancel();
@@ -2101,46 +2123,47 @@ public class TabLayout extends HorizontalScrollView {
             }
         }
 
-        private float calculateStretch(float offset) {
-            float value;
-            if (offset < 0.5) {
-                value = offset + offset * mTabIndicatorStretch;
-            } else {
-                value = offset + (1 - offset) * mTabIndicatorStretch;
-            }
-            return value;
-        }
-
-        //change
+        //change 这边的
+        // TODO: 2018/8/1  
         private void updateIndicatorPosition() {
-            final View selectedTitle = getChildAt(mSelectedPosition);
+
+            final View selected = getChildAt(mSelectedPosition);
             int left, right;
 
-            if (selectedTitle != null && selectedTitle.getWidth() > 0) {
-                int selectedTitleD[] = getToTabStripLeftDistance(selectedTitle);
+            if (selected != null && selected.getWidth() > 0) {
+                int selectedTitleD[] = getToTabStripLeftDistance(selected);
                 left = selectedTitleD[0];
                 right = selectedTitleD[1];
 
                 if (mSelectionOffset > 0f && mSelectedPosition < getChildCount() - 1) {
                     // Draw the selection partway between the tabs
-                    View nextTitle = getChildAt(mSelectedPosition + 1);
+                    View next = getChildAt(mSelectedPosition + 1);
                     //目标位置
-                    int nextTitleD[] = getToTabStripLeftDistance(nextTitle);
+                    int nextTitleD[] = getToTabStripLeftDistance(next);
                     int targetLeft = nextTitleD[0];
                     int targetRight = nextTitleD[1];
                     final float fraction = mSelectionOffset;
                     if (DEBUG) {
-                        Log.d(TAG, "fraction: " + fraction);
+                        Log.d(TAG, "updateIndicatorPosition: " + mSelectedPosition);
+                        Log.d(TAG, "mViewPager.getCurrentItem(): " + mViewPager.getCurrentItem());
                     }
-                    setIndicatorPosition(
-                            AnimationUtils.lerp(left, targetLeft, fraction),
-                            AnimationUtils.lerp(right, targetRight, calculateStretch(fraction)));
-                    return;
+                    left = AnimationUtils.lerp(left, targetLeft, (fraction));
+                    right = AnimationUtils.lerp(right, targetRight, calculateStretch(fraction));
                 }
             } else {
                 left = right = -1;
             }
             setIndicatorPosition(left, right);
+        }
+
+        private float calculateStretch(float fraction) {
+            float value;
+            if (fraction < 0.5) {
+                value = fraction + fraction * mTabIndicatorStretch;
+            } else {
+                value = fraction + (1 - fraction) * mTabIndicatorStretch;
+            }
+            return value;
         }
         //change
 
@@ -2195,12 +2218,9 @@ public class TabLayout extends HorizontalScrollView {
         }
 
         int getLineWidth(View view) {
-            if (mSelectedIndicatorWidth != 0) {
-                //固定宽度
-                return mSelectedIndicatorWidth;
-            } else {
+            if (mSelectedIndicatorWidth < 0) {
                 //等宽
-                switch (mSelectedIndicatorEqual) {
+                switch (mSelectedIndicatorWidth) {
                     case EQUAL_TO_TEXT:
                         return getTextView(view).getWidth();
                     case EQUAL_TO_ICON:
@@ -2210,6 +2230,28 @@ public class TabLayout extends HorizontalScrollView {
                     default:
                         return view.getWidth();
                 }
+            } else {
+                //固定宽度
+                return mSelectedIndicatorWidth;
+            }
+        }
+
+        int getLineHeight(View view) {
+            if (mSelectedIndicatorHeight < 0) {
+                //等宽
+                switch (mSelectedIndicatorHeight) {
+                    case EQUAL_TO_TEXT:
+                        return getTextView(view).getHeight();
+                    case EQUAL_TO_ICON:
+                        return getIcon(view).getHeight();
+                    case EQUAL_TO_CUSTOM:
+                        return getCustom(view).getHeight();
+                    default:
+                        return view.getHeight();
+                }
+            } else {
+                //固定宽度
+                return mSelectedIndicatorHeight;
             }
         }
 
@@ -2248,6 +2290,7 @@ public class TabLayout extends HorizontalScrollView {
                 updateIndicatorPosition();
                 return;
             }
+
             int[] targetD = getToTabStripLeftDistance(targetView);
             final int targetLeft = targetD[0];
             final int targetRight = targetD[1];
@@ -2287,10 +2330,6 @@ public class TabLayout extends HorizontalScrollView {
                     @Override
                     public void onAnimationUpdate(ValueAnimator animator) {
                         final float fraction = animator.getAnimatedFraction();
-                        if (DEBUG) {
-                            Log.d(TAG, "onAnimationUpdate: " + fraction);
-                        }
-
                         if (startLeft < targetLeft) {
                             setIndicatorPosition(
                                     AnimationUtils.lerp(startLeft, targetLeft, fraction),
@@ -2316,20 +2355,43 @@ public class TabLayout extends HorizontalScrollView {
         @Override
         public void draw(Canvas canvas) {
             super.draw(canvas);
+        }
 
+        @Override
+        protected void onDraw(Canvas canvas) {
+            super.onDraw(canvas);
             // Thick colored underline below the current selection
             if (mIndicatorLeft >= 0 && mIndicatorRight > mIndicatorLeft) {
-                int bottom = getHeight() - mSelectedIndicatorBottom;
+                int left = mIndicatorLeft;
+                int top = 0;
+                int right = mIndicatorRight;
+                int bottom = 0;
+                int height = getLineHeight(getChildAt(mSelectedPosition));
 
-                if (mTabIndicatorShape == ROUND_RECT) {
-                    mRectF.left = mIndicatorLeft;
-                    mRectF.top = bottom - mSelectedIndicatorHeight;
-                    mRectF.right = mIndicatorRight;
-                    mRectF.bottom = bottom;
-                    canvas.drawRoundRect(mRectF, mSelectedIndicatorHeight / 2, mSelectedIndicatorHeight / 2, mSelectedIndicatorPaint);
+                switch (mTabIndicatorGravity) {
+                    case TOP:
+                        top = 0;
+                        bottom += height;
+                        break;
+                    case CENTER:
+                        top = getHeight() / 2 - height / 2;
+                        bottom = top + height;
+                        break;
+                    default:
+                        top = getHeight() - height;
+                        bottom = getHeight();
+                        break;
+                }
+                top -= mSelectedIndicatorBottom;
+                bottom -= mSelectedIndicatorBottom;
+
+                //绘制滑动背景
+                if (mTabIndicatorDrawable != null) {
+                    mTabIndicatorDrawable.setBounds(left, top, right, bottom);
+                    mTabIndicatorDrawable.draw(canvas);
                 } else {
-                    canvas.drawRect(mIndicatorLeft, bottom - mSelectedIndicatorHeight,
-                            mIndicatorRight, bottom, mSelectedIndicatorPaint);
+                    canvas.drawRect(left, top,
+                            right, bottom, mSelectedIndicatorPaint);
                 }
             }
         }
@@ -2389,7 +2451,7 @@ public class TabLayout extends HorizontalScrollView {
 
     /**
      * A {@link ViewPager.OnPageChangeListener} class which contains the
-     * necessary calls back to the provided {@link TabLayout} so that the tab position is
+     * necessary calls back to the provided {@link ExTabLayout} so that the tab position is
      * kept in sync.
      * <p>
      * <p>This class stores the provided TabLayout weakly, meaning that you can use
@@ -2398,12 +2460,12 @@ public class TabLayout extends HorizontalScrollView {
      * not cause a leak.
      */
     public static class TabLayoutOnPageChangeListener implements ViewPager.OnPageChangeListener {
-        private final WeakReference<TabLayout> mTabLayoutRef;
+        private final WeakReference<ExTabLayout> mTabLayoutRef;
         private int mPreviousScrollState;
         private int mScrollState;
 
-        public TabLayoutOnPageChangeListener(TabLayout tabLayout) {
-            mTabLayoutRef = new WeakReference<>(tabLayout);
+        public TabLayoutOnPageChangeListener(ExTabLayout exTabLayout) {
+            mTabLayoutRef = new WeakReference<>(exTabLayout);
         }
 
         @Override
@@ -2415,8 +2477,8 @@ public class TabLayout extends HorizontalScrollView {
         @Override
         public void onPageScrolled(final int position, final float positionOffset,
                                    final int positionOffsetPixels) {
-            final TabLayout tabLayout = mTabLayoutRef.get();
-            if (tabLayout != null) {
+            final ExTabLayout exTabLayout = mTabLayoutRef.get();
+            if (exTabLayout != null) {
                 // Only update the text selection if we're not settling, or we are settling after
                 // being dragged
                 final boolean updateText = mScrollState != SCROLL_STATE_SETTLING ||
@@ -2426,21 +2488,21 @@ public class TabLayout extends HorizontalScrollView {
                 // onPageSelected() instead.
                 final boolean updateIndicator = !(mScrollState == SCROLL_STATE_SETTLING
                         && mPreviousScrollState == SCROLL_STATE_IDLE);
-                tabLayout.setScrollPosition(position, positionOffset, updateText, updateIndicator);
+                exTabLayout.setScrollPosition(position, positionOffset, updateText, updateIndicator);
             }
         }
 
         @Override
         public void onPageSelected(final int position) {
-            final TabLayout tabLayout = mTabLayoutRef.get();
-            if (tabLayout != null && tabLayout.getSelectedTabPosition() != position
-                    && position < tabLayout.getTabCount()) {
+            final ExTabLayout exTabLayout = mTabLayoutRef.get();
+            if (exTabLayout != null && exTabLayout.getSelectedTabPosition() != position
+                    && position < exTabLayout.getTabCount()) {
                 // Select the tab, only updating the indicator if we're not being dragged/settled
                 // (since onPageScrolled will handle that).
                 final boolean updateIndicator = mScrollState == SCROLL_STATE_IDLE
                         || (mScrollState == SCROLL_STATE_SETTLING
                         && mPreviousScrollState == SCROLL_STATE_IDLE);
-                tabLayout.selectTab(tabLayout.getTabAt(position), updateIndicator);
+                exTabLayout.selectTab(exTabLayout.getTabAt(position), updateIndicator);
             }
         }
 
@@ -2450,10 +2512,10 @@ public class TabLayout extends HorizontalScrollView {
     }
 
     /**
-     * A {@link TabLayout.OnTabSelectedListener} class which contains the necessary calls back
+     * A {@link ExTabLayout.OnTabSelectedListener} class which contains the necessary calls back
      * to the provided {@link ViewPager} so that the tab position is kept in sync.
      */
-    public static class ViewPagerOnTabSelectedListener implements TabLayout.OnTabSelectedListener {
+    public static class ViewPagerOnTabSelectedListener implements ExTabLayout.OnTabSelectedListener {
         private final ViewPager mViewPager;
 
         public ViewPagerOnTabSelectedListener(ViewPager viewPager) {
@@ -2461,17 +2523,17 @@ public class TabLayout extends HorizontalScrollView {
         }
 
         @Override
-        public void onTabSelected(TabLayout.Tab tab) {
+        public void onTabSelected(ExTabLayout.Tab tab) {
             mViewPager.setCurrentItem(tab.getPosition());
         }
 
         @Override
-        public void onTabUnselected(TabLayout.Tab tab) {
+        public void onTabUnselected(ExTabLayout.Tab tab) {
             // No-op
         }
 
         @Override
-        public void onTabReselected(TabLayout.Tab tab) {
+        public void onTabReselected(ExTabLayout.Tab tab) {
             // No-op
         }
     }
