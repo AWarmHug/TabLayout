@@ -29,7 +29,7 @@
             <enum name="equalToIcon" value="-3" />
             <enum name="equalToCustom" value="-4" />
         </attr>
-        <!--设置宽度,同上-->
+        <!--设置高度,同上-->
         <attr name="exTabIndicatorHeight" format="dimension|enum">
             <enum name="equalToTab" value="-1" />
             <enum name="equalToText" value="-2" />
