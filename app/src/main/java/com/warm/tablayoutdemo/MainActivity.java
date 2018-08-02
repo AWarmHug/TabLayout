@@ -10,7 +10,7 @@ import com.warm.tablayout.ExTabLayout;
 
 public class MainActivity extends AppCompatActivity {
     private android.support.design.widget.TabLayout tabDesign;
-    private ExTabLayout tabNo, tabMy, tabMy2, tabMy3, tab_custom;
+    private ExTabLayout tabNo, ex, tabMy, tabMy2, tabMy3, tab_custom;
     private ViewPager mPager;
 
     @Override
@@ -18,13 +18,22 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         tabDesign = findViewById(R.id.tab_design);
+        ex = new ExTabLayout(this);
+        ex.setTabIndicatorColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        ex.setTabIndicatorPadding(8);
+        ex.setTabIndicatorStretch(1f);
+        ex.setTabTextSize(32, 36);
+        ex.setTabTextColors(ContextCompat.getColor(this, android.R.color.black), ContextCompat.getColor(this, R.color.colorPrimary));
+        ((LinearLayout) findViewById(R.id.line)).addView(ex, 1);
+
         tabNo = findViewById(R.id.tab_no);
+
         tabMy = findViewById(R.id.tab_my);
         tabMy2 = findViewById(R.id.tab_my2);
         tabMy3 = findViewById(R.id.tab_my3);
         tab_custom = findViewById(R.id.tab_custom);
         mPager = findViewById(R.id.pager);
-        fixed();
+        scroll();
         for (int i = 0; i < tab_custom.getTabCount(); i++) {
             tab_custom.getTabAt(i).setCustomView(R.layout.item);
         }
@@ -35,6 +44,9 @@ public class MainActivity extends AppCompatActivity {
 
         tabDesign.setTabMode(ExTabLayout.MODE_FIXED);
         tabDesign.setupWithViewPager(mPager);
+
+        ex.setTabMode(ExTabLayout.MODE_FIXED);
+        ex.setupWithViewPager(mPager);
 
         tabNo.setTabMode(ExTabLayout.MODE_FIXED);
         tabNo.setupWithViewPager(mPager);
@@ -51,15 +63,6 @@ public class MainActivity extends AppCompatActivity {
         tab_custom.setTabMode(ExTabLayout.MODE_FIXED);
         tab_custom.setupWithViewPager(mPager);
 
-        ExTabLayout ex = new ExTabLayout(this);
-        ex.setTabMode(ExTabLayout.MODE_FIXED);
-        ex.setupWithViewPager(mPager);
-        ex.setTabIndicatorColor(ContextCompat.getColor(this,R.color.colorPrimary));
-        ex.setTabIndicatorPadding(8);
-        ex.setTabTextSize(32,36);
-        ex.setTabTextColors(ContextCompat.getColor(this,android.R.color.black),ContextCompat.getColor(this,R.color.colorPrimary));
-        ((LinearLayout) findViewById(R.id.line)).addView(ex, 1);
-
     }
 
     private void scroll() {
@@ -68,11 +71,14 @@ public class MainActivity extends AppCompatActivity {
         tabDesign.setTabMode(ExTabLayout.MODE_SCROLLABLE);
         tabDesign.setupWithViewPager(mPager);
 
-        tabMy.setTabMode(ExTabLayout.MODE_SCROLLABLE);
-        tabMy.setupWithViewPager(mPager);
-
         tabNo.setTabMode(ExTabLayout.MODE_SCROLLABLE);
         tabNo.setupWithViewPager(mPager);
+
+        ex.setTabMode(ExTabLayout.MODE_SCROLLABLE);
+        ex.setupWithViewPager(mPager);
+
+        tabMy.setTabMode(ExTabLayout.MODE_SCROLLABLE);
+        tabMy.setupWithViewPager(mPager);
 
         tabMy2.setTabMode(ExTabLayout.MODE_SCROLLABLE);
         tabMy2.setupWithViewPager(mPager);

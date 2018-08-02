@@ -29,6 +29,7 @@
         app:exTabBackground="@drawable/item_background_holo_light"
         app:exTabIndicatorPadding="4dp"
         app:exTabIndicatorWidth="24dp"
+        app:exTabIndicatorStretch="1"
         app:exTabSelectedTextSize="16sp"
         app:exTabTextSize="14sp">
 
@@ -39,9 +40,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:exTabIndicatorGravity="top"
-        app:exTabIndicatorHeight="2dp"
-        app:exTabIndicatorPadding="4dp"
-        app:exTabIndicatorStretch="0.8"
+        app:exTabIndicatorHeight="4dp"
+        app:exTabIndicatorPadding="2dp"
+        app:exTabIndicatorStretch="1"
         app:exTabSelectedTextSize="16sp"
         app:exTabTextSize="14sp">
 
@@ -58,6 +59,7 @@
         app:exTabIndicatorWidth="equalToTab"
         app:exTabSelectedTextColor="#FF213E"
         app:exTabSelectedTextSize="16sp"
+        app:exTabIndicatorStretch="1"
         app:exTabTextSize="14sp">
 
     </com.warm.tablayout.ExTabLayout>

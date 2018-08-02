@@ -342,11 +342,7 @@ public class ExTabLayout extends HorizontalScrollView {
 
         if (a.hasValue(R.styleable.ExTabLayout_exTabIndicatorStretch)) {
             float stretch = a.getFloat(R.styleable.ExTabLayout_exTabIndicatorStretch, 0f);
-            if (stretch >= 0 && stretch < 1) {
-                mTabStrip.setTabIndicatorStretch(stretch);
-            } else {
-                throw new IllegalArgumentException("stretch should be >=0 && <1");
-            }
+            mTabStrip.setTabIndicatorStretch(stretch);
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -500,7 +496,7 @@ public class ExTabLayout extends HorizontalScrollView {
         mTabStrip.setTabIndicatorHeight(height);
     }
 
-    public void setTabIndicatorStretch(@FloatRange(from = 0, to = 1.0, toInclusive = false) float stretch) {
+    public void setTabIndicatorStretch(@FloatRange(from = 0, to = 1.0) float stretch) {
         mTabStrip.setTabIndicatorStretch(stretch);
     }
 
@@ -1826,13 +1822,13 @@ public class ExTabLayout extends HorizontalScrollView {
                 // If there isn't a custom view, we'll us our own in-built layouts
                 if (mIconView == null) {
                     ImageView iconView = (ImageView) LayoutInflater.from(getContext())
-                            .inflate(R.layout.design_layout_tab_icon, this, false);
+                            .inflate(R.layout.extab_icon, this, false);
                     addView(iconView, 0);
                     mIconView = iconView;
                 }
                 if (mTextView == null) {
                     TextView textView = (TextView) LayoutInflater.from(getContext())
-                            .inflate(R.layout.design_layout_tab_text, this, false);
+                            .inflate(R.layout.extab_text, this, false);
                     addView(textView);
                     mTextView = textView;
                     mDefaultMaxLines = TextViewCompat.getMaxLines(mTextView);
@@ -1964,6 +1960,9 @@ public class ExTabLayout extends HorizontalScrollView {
         }
 
         void setTabIndicatorStretch(float stretch) {
+            if (stretch < 0 || stretch > 1) {
+                throw new IllegalArgumentException("stretch should be >=0 && <=1");
+            }
             if (mTabIndicatorStretch != stretch) {
                 mTabIndicatorStretch = stretch;
                 ViewCompat.postInvalidateOnAnimation(this);
