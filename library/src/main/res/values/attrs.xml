@@ -28,7 +28,7 @@
             <enum name="equalToIcon" value="-3" />
             <enum name="equalToCustom" value="-4" />
         </attr>
-        <attr name="exTabIndicatorBottom" format="dimension" />
+        <attr name="exTabIndicatorPadding" format="dimension" />
         <attr name="exTabContentStart" format="dimension" />
         <attr name="exTabBackground" format="reference" />
         <attr name="exTabMode">

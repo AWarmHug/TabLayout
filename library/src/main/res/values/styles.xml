@@ -10,6 +10,7 @@
         <item name="exTabMaxWidth">@dimen/design_tab_max_width</item>
         <item name="exTabIndicatorColor">?attr/colorAccent</item>
         <item name="exTabIndicatorHeight">2dp</item>
+        <item name="exTabIndicatorWidth">equalToTab</item>
         <item name="exTabPaddingStart">12dp</item>
         <item name="exTabPaddingEnd">12dp</item>
         <item name="exTabBackground">?attr/selectableItemBackground</item>

@@ -1,14 +1,16 @@
 package com.warm.tablayoutdemo;
 
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.LinearLayout;
 
 import com.warm.tablayout.ExTabLayout;
 
 public class MainActivity extends AppCompatActivity {
     private android.support.design.widget.TabLayout tabDesign;
-    private ExTabLayout tabMy, tabMy2, tab_my3;
+    private ExTabLayout tabNo, tabMy, tabMy2, tabMy3, tab_custom;
     private ViewPager mPager;
 
     @Override
@@ -16,45 +18,71 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         tabDesign = findViewById(R.id.tab_design);
+        tabNo = findViewById(R.id.tab_no);
         tabMy = findViewById(R.id.tab_my);
         tabMy2 = findViewById(R.id.tab_my2);
-        tab_my3 = findViewById(R.id.tab_custom);
+        tabMy3 = findViewById(R.id.tab_my3);
+        tab_custom = findViewById(R.id.tab_custom);
         mPager = findViewById(R.id.pager);
         fixed();
-        for (int i = 0; i < tab_my3.getTabCount(); i++) {
-            tab_my3.getTabAt(i).setCustomView(R.layout.item);
+        for (int i = 0; i < tab_custom.getTabCount(); i++) {
+            tab_custom.getTabAt(i).setCustomView(R.layout.item);
         }
     }
 
     private void fixed() {
         mPager.setAdapter(new Adapter(getSupportFragmentManager(), 3));
-//        tabMy.setTabMode(ExTabLayout.MODE_FIXED);
-//        tabMy.setupWithViewPager(mPager);
-//
-//        tabDesign.setTabMode(ExTabLayout.MODE_FIXED);
-//        tabDesign.setupWithViewPager(mPager);
-//
+
+        tabDesign.setTabMode(ExTabLayout.MODE_FIXED);
+        tabDesign.setupWithViewPager(mPager);
+
+        tabNo.setTabMode(ExTabLayout.MODE_FIXED);
+        tabNo.setupWithViewPager(mPager);
+
+        tabMy.setTabMode(ExTabLayout.MODE_FIXED);
+        tabMy.setupWithViewPager(mPager);
+
         tabMy2.setTabMode(ExTabLayout.MODE_FIXED);
         tabMy2.setupWithViewPager(mPager);
 
-//        tab_my3.setTabMode(ExTabLayout.MODE_FIXED);
-//        tab_my3.setupWithViewPager(mPager);
+        tabMy3.setTabMode(ExTabLayout.MODE_FIXED);
+        tabMy3.setupWithViewPager(mPager);
+
+        tab_custom.setTabMode(ExTabLayout.MODE_FIXED);
+        tab_custom.setupWithViewPager(mPager);
+
+        ExTabLayout ex = new ExTabLayout(this);
+        ex.setTabMode(ExTabLayout.MODE_FIXED);
+        ex.setupWithViewPager(mPager);
+        ex.setTabIndicatorColor(ContextCompat.getColor(this,R.color.colorPrimary));
+        ex.setTabIndicatorPadding(8);
+        ex.setTabTextSize(32,36);
+        ex.setTabTextColors(ContextCompat.getColor(this,android.R.color.black),ContextCompat.getColor(this,R.color.colorPrimary));
+        ((LinearLayout) findViewById(R.id.line)).addView(ex, 1);
 
     }
 
     private void scroll() {
         mPager.setAdapter(new Adapter(getSupportFragmentManager(), 10));
-        tabMy.setTabMode(ExTabLayout.MODE_SCROLLABLE);
-        tabMy.setupWithViewPager(mPager);
 
         tabDesign.setTabMode(ExTabLayout.MODE_SCROLLABLE);
         tabDesign.setupWithViewPager(mPager);
 
+        tabMy.setTabMode(ExTabLayout.MODE_SCROLLABLE);
+        tabMy.setupWithViewPager(mPager);
+
+        tabNo.setTabMode(ExTabLayout.MODE_SCROLLABLE);
+        tabNo.setupWithViewPager(mPager);
+
         tabMy2.setTabMode(ExTabLayout.MODE_SCROLLABLE);
         tabMy2.setupWithViewPager(mPager);
 
-        tab_my3.setTabMode(ExTabLayout.MODE_SCROLLABLE);
-        tab_my3.setupWithViewPager(mPager);
+        tabMy3.setTabMode(ExTabLayout.MODE_SCROLLABLE);
+        tabMy3.setupWithViewPager(mPager);
+
+
+        tab_custom.setTabMode(ExTabLayout.MODE_SCROLLABLE);
+        tab_custom.setupWithViewPager(mPager);
     }
 
 }
