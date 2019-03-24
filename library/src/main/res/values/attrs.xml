@@ -51,11 +51,7 @@
         <attr name="exTabMinWidth" format="dimension" />
         <attr name="exTabMaxWidth" format="dimension" />
         <attr name="exTabTextAppearance" format="reference" />
-        <attr name="exTabTextSize" format="dimension" />
-        <!--选中字体大小-->
-        <attr name="exTabSelectedTextSize" format="dimension" />
-        <attr name="exTabTextColor" format="color" />
-        <attr name="exTabSelectedTextColor" format="color" />
+        <attr name="exTabSelectTextAppearance" format="reference" />
         <attr name="exTabPaddingStart" format="dimension" />
         <attr name="exTabPaddingTop" format="dimension" />
         <attr name="exTabPaddingEnd" format="dimension" />

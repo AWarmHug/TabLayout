@@ -10,7 +10,7 @@ import com.warm.tablayout.ExTabLayout;
 
 public class MainActivity extends AppCompatActivity {
     private android.support.design.widget.TabLayout tabDesign;
-    private ExTabLayout tabNo, ex, tabMy, tabMy2, tabMy3, tab_custom;
+    private ExTabLayout tabNo, ex, tabMy, tabMy2, tabMy3, tab_custom, tab_textAppearance;
     private ViewPager mPager;
 
     @Override
@@ -22,8 +22,7 @@ public class MainActivity extends AppCompatActivity {
         ex.setTabIndicatorColor(ContextCompat.getColor(this, R.color.colorPrimary));
         ex.setTabIndicatorPadding(8);
         ex.setTabIndicatorStretch(1f);
-        ex.setTabTextSize(32, 36);
-        ex.setTabTextColors(ContextCompat.getColor(this, android.R.color.black), ContextCompat.getColor(this, R.color.colorPrimary));
+        ex.setTabTextAppearance(R.style.AppTheme_TabTextAppearance, R.style.AppTheme_TabSelectedTextAppearance);
         ((LinearLayout) findViewById(R.id.line)).addView(ex, 1);
 
         tabNo = findViewById(R.id.tab_no);
@@ -32,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
         tabMy2 = findViewById(R.id.tab_my2);
         tabMy3 = findViewById(R.id.tab_my3);
         tab_custom = findViewById(R.id.tab_custom);
+        tab_textAppearance = findViewById(R.id.tab_textAppearance);
         mPager = findViewById(R.id.pager);
         scroll();
         for (int i = 0; i < tab_custom.getTabCount(); i++) {
@@ -63,6 +63,8 @@ public class MainActivity extends AppCompatActivity {
         tab_custom.setTabMode(ExTabLayout.MODE_FIXED);
         tab_custom.setupWithViewPager(mPager);
 
+        tab_textAppearance.setTabMode(ExTabLayout.MODE_FIXED);
+        tab_textAppearance.setupWithViewPager(mPager);
     }
 
     private void scroll() {
@@ -89,6 +91,9 @@ public class MainActivity extends AppCompatActivity {
 
         tab_custom.setTabMode(ExTabLayout.MODE_SCROLLABLE);
         tab_custom.setupWithViewPager(mPager);
+
+        tab_textAppearance.setTabMode(ExTabLayout.MODE_SCROLLABLE);
+        tab_textAppearance.setupWithViewPager(mPager);
     }
 
 }

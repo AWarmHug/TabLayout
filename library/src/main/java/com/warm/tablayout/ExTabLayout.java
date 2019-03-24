@@ -38,6 +38,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.Px;
 import android.support.annotation.RestrictTo;
 import android.support.annotation.StringRes;
+import android.support.annotation.StyleRes;
 import android.support.v4.util.Pools;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.PagerAdapter;
@@ -282,7 +283,8 @@ public class ExTabLayout extends HorizontalScrollView {
     int mTabPaddingBottom;
 
     int mTabTextAppearance;
-    ColorStateList mTabTextColors;
+    int mTabSelectTextAppearance;
+    //    ColorStateList mTabTextColors;
     float mTabTextSize;
     //add
     float mTabSelectedTextSize;
@@ -417,36 +419,47 @@ public class ExTabLayout extends HorizontalScrollView {
         try {
             mTabTextSize = ta.getDimensionPixelSize(
                     android.support.v7.appcompat.R.styleable.TextAppearance_android_textSize, 0);
-            mTabTextColors = ta.getColorStateList(
-                    android.support.v7.appcompat.R.styleable.TextAppearance_android_textColor);
+//            mTabTextColors = ta.getColorStateList(
+//                    android.support.v7.appcompat.R.styleable.TextAppearance_android_textColor);
         } finally {
             ta.recycle();
         }
 
-        if (a.hasValue(R.styleable.ExTabLayout_exTabTextColor)) {
-            // If we have an explicit text color set, use it instead
-            mTabTextColors = a.getColorStateList(R.styleable.ExTabLayout_exTabTextColor);
-        }
-
-        if (a.hasValue(R.styleable.ExTabLayout_exTabSelectedTextColor)) {
-            // We have an explicit selected text color set, so we need to make merge it with the
-            // current colors. This is exposed so that developers can use theme attributes to set
-            // this (theme attrs in ColorStateLists are Lollipop+)
-            final int selected = a.getColor(R.styleable.ExTabLayout_exTabSelectedTextColor, 0);
-            mTabTextColors = createColorStateList(mTabTextColors.getDefaultColor(), selected);
-        }
+//        if (a.hasValue(R.styleable.ExTabLayout_exTabTextColor)) {
+//            // If we have an explicit text color set, use it instead
+//            mTabTextColors = a.getColorStateList(R.styleable.ExTabLayout_exTabTextColor);
+//        }
+//
+//        if (a.hasValue(R.styleable.ExTabLayout_exTabSelectedTextColor)) {
+//            // We have an explicit selected text color set, so we need to make merge it with the
+//            // current colors. This is exposed so that developers can use theme attributes to set
+//            // this (theme attrs in ColorStateLists are Lollipop+)
+//            final int selected = a.getColor(R.styleable.ExTabLayout_exTabSelectedTextColor, 0);
+//            mTabTextColors = createColorStateList(mTabTextColors.getDefaultColor(), selected);
+//        }
 
         //add
-        if (a.hasValue(R.styleable.ExTabLayout_exTabTextSize)) {
-            mTabTextSize = a.getDimensionPixelSize(
-                    R.styleable.ExTabLayout_exTabTextSize, 0);
-        }
 
-        if (a.hasValue(R.styleable.ExTabLayout_exTabSelectedTextSize)) {
-            mTabSelectedTextSize = a.getDimensionPixelSize(
-                    R.styleable.ExTabLayout_exTabSelectedTextSize, (int) mTabTextSize);
-        } else {
-            mTabSelectedTextSize = mTabTextSize;
+
+        mTabSelectTextAppearance = a.getResourceId(R.styleable.ExTabLayout_exTabSelectTextAppearance,
+                R.style.LibraryTextAppearanceTab);
+
+        // Text colors/sizes come from the text appearance first
+        final TypedArray sta = context.obtainStyledAttributes(mTabSelectTextAppearance,
+                android.support.v7.appcompat.R.styleable.TextAppearance);
+        try {
+            mTabSelectedTextSize = sta.getDimensionPixelSize(
+                    android.support.v7.appcompat.R.styleable.TextAppearance_android_textSize, 0);
+
+//            ColorStateList tabTextColors = sta.getColorStateList(
+//                    android.support.v7.appcompat.R.styleable.TextAppearance_android_textColor);
+//
+//            final int selected = tabTextColors.getDefaultColor();
+//
+//            mTabTextColors = createColorStateList(mTabTextColors.getDefaultColor(), selected);
+
+        } finally {
+            sta.recycle();
         }
         //add
 
@@ -821,35 +834,51 @@ public class ExTabLayout extends HorizontalScrollView {
         return mTabGravity;
     }
 
+    public void setTabTextAppearance(@StyleRes int tabTextAppearance, @StyleRes int tabSelectTextAppearance) {
+        if (tabTextAppearance != tabSelectTextAppearance) {
+            mTabTextAppearance = tabTextAppearance;
+            mTabSelectTextAppearance = tabSelectTextAppearance;
+            updateAllTabs();
+        }
+    }
+
+    public int getTabTextAppearance() {
+        return mTabTextAppearance;
+    }
+
+    public int getTabSelectTextAppearance() {
+        return mTabSelectTextAppearance;
+    }
+
     /**
      * Sets the text colors for the different states (normal, selected) used for the tabs.
      *
      * @see #getTabTextColors()
      */
-    public void setTabTextColors(@Nullable ColorStateList textColor) {
-        if (mTabTextColors != textColor) {
-            mTabTextColors = textColor;
-            updateAllTabs();
-        }
-    }
+//    public void setTabTextColors(@Nullable ColorStateList textColor) {
+//        if (mTabTextColors != textColor) {
+//            mTabTextColors = textColor;
+//            updateAllTabs();
+//        }
+//    }
 
     //add
-    public void setTabTextSize(@Px int normalSize, @Px int selectedSize) {
-        if (mTabTextSize != normalSize) {
-            mTabTextSize = normalSize;
-            mTabSelectedTextSize = selectedSize;
-            updateAllTabs();
-        }
-    }
+//    public void setTabTextSize(@Px int normalSize, @Px int selectedSize) {
+//        if (mTabTextSize != normalSize) {
+//            mTabTextSize = normalSize;
+//            mTabSelectedTextSize = selectedSize;
+//            updateAllTabs();
+//        }
+//    }
     //add
 
     /**
      * Gets the text colors for the different states (normal, selected) used for the tabs.
      */
-    @Nullable
-    public ColorStateList getTabTextColors() {
-        return mTabTextColors;
-    }
+//    @Nullable
+//    public ColorStateList getTabTextColors() {
+//        return mTabTextColors;
+//    }
 
     /**
      * Sets the text colors for the different states (normal, selected) used for the tabs.
@@ -857,9 +886,9 @@ public class ExTabLayout extends HorizontalScrollView {
      * @attr ref android.support.design.R.styleable#TabLayout_tabTextColor
      * @attr ref android.support.design.R.styleable#TabLayout_tabSelectedTextColor
      */
-    public void setTabTextColors(int normalColor, int selectedColor) {
-        setTabTextColors(createColorStateList(normalColor, selectedColor));
-    }
+//    public void setTabTextColors(int normalColor, int selectedColor) {
+//        setTabTextColors(createColorStateList(normalColor, selectedColor));
+//    }
 
     /**
      * The one-stop shop for setting up this {@link ExTabLayout} with a {@link ViewPager}.
@@ -1678,7 +1707,15 @@ public class ExTabLayout extends HorizontalScrollView {
                 mTextView.setSelected(selected);
                 // change
                 if (changed) {
-                    mTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, selected ? mTabSelectedTextSize : mTabTextSize);
+                    TextViewCompat.setTextAppearance(mTextView, selected ? mTabSelectTextAppearance : mTabTextAppearance);
+
+//                    if (mTabTextColors != null) {
+//                        mTextView.setTextColor(mTabTextColors);
+//                    }
+//                    if (mTabSelectedTextSize != mTabTextSize) {
+//                        mTextView.setTextSize(selected ? mTabSelectedTextSize : mTabTextSize);
+//                    }
+
                 }
                 // change
             }
@@ -1833,13 +1870,13 @@ public class ExTabLayout extends HorizontalScrollView {
                     mTextView = textView;
                     mDefaultMaxLines = TextViewCompat.getMaxLines(mTextView);
                 }
-                TextViewCompat.setTextAppearance(mTextView, mTabTextAppearance);
-                if (mTabTextColors != null) {
-                    mTextView.setTextColor(mTabTextColors);
-                }
-                if (mTabSelectedTextSize != mTabTextSize) {
-                    mTextView.setTextSize(mTextView.isSelected() ? mTabSelectedTextSize : mTabTextSize);
-                }
+                TextViewCompat.setTextAppearance(mTextView, mTextView.isSelected() ? mTabSelectTextAppearance : mTabTextAppearance);
+//                if (mTabTextColors != null) {
+//                    mTextView.setTextColor(mTabTextColors);
+//                }
+//                if (mTabSelectedTextSize != mTabTextSize) {
+//                    mTextView.setTextSize(mTextView.isSelected() ? mTabSelectedTextSize : mTabTextSize);
+//                }
                 updateTextAndIcon(mTextView, mIconView);
             } else {
                 // Else, we'll see if there is a TextView or ImageView present and update them
