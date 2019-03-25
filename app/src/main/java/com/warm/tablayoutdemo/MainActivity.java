@@ -34,9 +34,6 @@ public class MainActivity extends AppCompatActivity {
         tab_custom = findViewById(R.id.tab_custom);
         mPager = findViewById(R.id.pager);
         scroll();
-        for (int i = 0; i < tab_custom.getTabCount(); i++) {
-            tab_custom.getTabAt(i).setCustomView(R.layout.item);
-        }
     }
 
     private void fixed() {

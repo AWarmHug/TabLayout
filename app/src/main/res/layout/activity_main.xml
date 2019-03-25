@@ -73,7 +73,7 @@
         app:exTabIndicatorGravity="center"
         app:exTabIndicatorHeight="24dp"
         app:exTabIndicatorStretch="0.8"
-        app:exTabIndicatorWidth="equalToCustom"
+        app:exTabIndicatorWidth="64dp"
         app:exTabSelectedTextColor="#DE0013"
         app:exTabSelectedTextSize="16sp"
         app:exTabTextSize="14sp">
