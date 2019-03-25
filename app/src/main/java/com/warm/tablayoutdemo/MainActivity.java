@@ -10,7 +10,8 @@ import com.warm.tablayout.ExTabLayout;
 
 public class MainActivity extends AppCompatActivity {
     private android.support.design.widget.TabLayout tabDesign;
-    private ExTabLayout tabNo, ex, tabMy, tabMy2, tabMy3, tab_custom, tab_textAppearance;
+    private ExTabLayout tabNo, ex, tabMy, tabMy2, tabMy3, tab_textAppearance;
+    private ExTabLayout tab_custom;
     private ViewPager mPager;
 
     @Override
@@ -28,15 +29,14 @@ public class MainActivity extends AppCompatActivity {
         tabNo = findViewById(R.id.tab_no);
 
         tabMy = findViewById(R.id.tab_my);
+
         tabMy2 = findViewById(R.id.tab_my2);
         tabMy3 = findViewById(R.id.tab_my3);
         tab_custom = findViewById(R.id.tab_custom);
         tab_textAppearance = findViewById(R.id.tab_textAppearance);
         mPager = findViewById(R.id.pager);
         scroll();
-        for (int i = 0; i < tab_custom.getTabCount(); i++) {
-            tab_custom.getTabAt(i).setCustomView(R.layout.item);
-        }
+
     }
 
     private void fixed() {

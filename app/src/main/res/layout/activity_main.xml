@@ -29,7 +29,9 @@
         app:exTabBackground="@drawable/item_background_holo_light"
         app:exTabIndicatorPadding="4dp"
         app:exTabIndicatorStretch="1"
-        app:exTabIndicatorWidth="24dp">
+        app:exTabIndicatorWidth="24dp"
+        app:exTabSelectTextAppearance="@style/AppTheme.TabSelectedTextAppearance"
+        app:exTabTextAppearance="@style/AppTheme.TabTextAppearance">
 
     </com.warm.tablayout.ExTabLayout>
 
@@ -40,7 +42,9 @@
         app:exTabIndicatorGravity="top"
         app:exTabIndicatorHeight="4dp"
         app:exTabIndicatorPadding="2dp"
-        app:exTabIndicatorStretch="1">
+        app:exTabIndicatorStretch="1"
+        app:exTabSelectTextAppearance="@style/AppTheme.TabSelectedTextAppearance"
+        app:exTabTextAppearance="@style/AppTheme.TabTextAppearance">
 
     </com.warm.tablayout.ExTabLayout>
 
@@ -48,12 +52,14 @@
         android:id="@+id/tab_my3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
+        android:background="#009688"
         app:exTabIndicatorDrawable="@drawable/indicator_white_nocorners"
         app:exTabIndicatorGravity="center"
         app:exTabIndicatorHeight="equalToTab"
         app:exTabIndicatorStretch="1"
-        app:exTabIndicatorWidth="equalToTab">
+        app:exTabIndicatorWidth="equalToTab"
+        app:exTabSelectTextAppearance="@style/AppTheme.TabSelectedTextAppearance"
+        app:exTabTextAppearance="@style/AppTheme.TabTextAppearance">
 
     </com.warm.tablayout.ExTabLayout>
 
@@ -66,7 +72,9 @@
         app:exTabIndicatorGravity="center"
         app:exTabIndicatorHeight="24dp"
         app:exTabIndicatorStretch="0.8"
-        app:exTabIndicatorWidth="equalToCustom">
+        app:exTabIndicatorWidth="64dp"
+        app:exTabSelectTextAppearance="@style/AppTheme.TabSelectedTextAppearance"
+        app:exTabTextAppearance="@style/AppTheme.TabTextAppearance">
 
     </com.warm.tablayout.ExTabLayout>
 
