@@ -6,6 +6,10 @@
 
 为了防止和系统的TabLayout冲突，所以属性需要增加ex开头。
 
+
+
+***V1.1.0和之前版本不兼容，主要区别是在设置文字效果，之前是单独设置textsize，textcolor效果，因为有时候滑动选中的可能还需要修改textStyle等等，所以这次就把这些合到了TabTextAppearance和TabSelectTextAppearance中。***
+
 V110属性变化如下：
 
 ```
