@@ -4,6 +4,8 @@
 
 在原design包中的TabLayout的基础上增加了一些属性。
 
+***在分支V110下，把和文字相关的操作合并到TabTextAppearance和TabSelectTextAppearance属性下，不需要单独设置size，color，已经把这几个属性给去掉了，这么做主要是为了设置选中的item变成粗体等其他TextAppearance拥有的属性。***
+
 为了防止和系统的TabLayout冲突，所以属性需要增加ex开头。
 
 属性如下：
