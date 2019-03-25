@@ -441,7 +441,7 @@ public class ExTabLayout extends HorizontalScrollView {
         //add
 
 
-        mTabSelectTextAppearance = a.getResourceId(R.styleable.ExTabLayout_exTabSelectTextAppearance,
+        mTabSelectTextAppearance = a.getResourceId(R.styleable.ExTabLayout_exTabSelectedTextAppearance,
                 R.style.LibraryTextAppearanceTab);
 
         // Text colors/sizes come from the text appearance first

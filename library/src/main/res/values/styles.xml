@@ -16,7 +16,7 @@
         <item name="exTabPaddingEnd">12dp</item>
         <item name="exTabBackground">?attr/selectableItemBackground</item>
         <item name="exTabTextAppearance">@style/LibraryTextAppearanceTab</item>
-        <item name="exTabSelectTextAppearance">@style/LibraryTextAppearanceTab</item>
+        <item name="exTabSelectedTextAppearance">@style/LibraryTextAppearanceTab</item>
         <item name="exTabGravity">fill</item>
         <item name="exTabMode">fixed</item>
     </style>

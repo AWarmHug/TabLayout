@@ -51,7 +51,7 @@
         <attr name="exTabMinWidth" format="dimension" />
         <attr name="exTabMaxWidth" format="dimension" />
         <attr name="exTabTextAppearance" format="reference" />
-        <attr name="exTabSelectTextAppearance" format="reference" />
+        <attr name="exTabSelectedTextAppearance" format="reference" />
         <attr name="exTabPaddingStart" format="dimension" />
         <attr name="exTabPaddingTop" format="dimension" />
         <attr name="exTabPaddingEnd" format="dimension" />

@@ -30,7 +30,7 @@
         app:exTabIndicatorPadding="4dp"
         app:exTabIndicatorStretch="1"
         app:exTabIndicatorWidth="24dp"
-        app:exTabSelectTextAppearance="@style/AppTheme.TabSelectedTextAppearance"
+        app:exTabSelectedTextAppearance="@style/AppTheme.TabSelectedTextAppearance"
         app:exTabTextAppearance="@style/AppTheme.TabTextAppearance">
 
     </com.warm.tablayout.ExTabLayout>
@@ -43,7 +43,7 @@
         app:exTabIndicatorHeight="4dp"
         app:exTabIndicatorPadding="2dp"
         app:exTabIndicatorStretch="1"
-        app:exTabSelectTextAppearance="@style/AppTheme.TabSelectedTextAppearance"
+        app:exTabSelectedTextAppearance="@style/AppTheme.TabSelectedTextAppearance"
         app:exTabTextAppearance="@style/AppTheme.TabTextAppearance">
 
     </com.warm.tablayout.ExTabLayout>
@@ -58,7 +58,7 @@
         app:exTabIndicatorHeight="equalToTab"
         app:exTabIndicatorStretch="1"
         app:exTabIndicatorWidth="equalToTab"
-        app:exTabSelectTextAppearance="@style/AppTheme.TabSelectedTextAppearance"
+        app:exTabSelectedTextAppearance="@style/AppTheme.TabSelectedTextAppearance"
         app:exTabTextAppearance="@style/AppTheme.TabTextAppearance">
 
     </com.warm.tablayout.ExTabLayout>
@@ -73,7 +73,7 @@
         app:exTabIndicatorHeight="24dp"
         app:exTabIndicatorStretch="0.8"
         app:exTabIndicatorWidth="64dp"
-        app:exTabSelectTextAppearance="@style/AppTheme.TabSelectedTextAppearance"
+        app:exTabSelectedTextAppearance="@style/AppTheme.TabSelectedTextAppearance"
         app:exTabTextAppearance="@style/AppTheme.TabTextAppearance">
 
     </com.warm.tablayout.ExTabLayout>
@@ -88,7 +88,7 @@
         app:exTabIndicatorHeight="24dp"
         app:exTabIndicatorStretch="0.8"
         app:exTabIndicatorWidth="equalToCustom"
-        app:exTabSelectTextAppearance="@style/AppTheme.TabSelectedTextAppearance"
+        app:exTabSelectedTextAppearance="@style/AppTheme.TabSelectedTextAppearance"
         app:exTabTextAppearance="@style/AppTheme.TabTextAppearance">
 
     </com.warm.tablayout.ExTabLayout>
